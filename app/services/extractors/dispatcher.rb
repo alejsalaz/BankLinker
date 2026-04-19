@@ -1,10 +1,11 @@
 module Extractors
   class Dispatcher
     EXTRACTORS = {
-      rappi_pay: Extractors::RappiPay
+      rappi_card: Extractors::RappiCard,
+      rappi_account: Extractors::RappiAccount
     }.freeze
 
-    DEFAULT = :rappi_pay
+    DEFAULT = :rappi_card
 
     def self.for(path, type: DEFAULT, password: nil)
       klass = EXTRACTORS[type.to_sym] || EXTRACTORS[DEFAULT]
