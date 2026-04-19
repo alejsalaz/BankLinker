@@ -4,18 +4,18 @@
       <%= heroicon :sparkles, klass: "w-5 h-5" %>
     </span>
     <div class="leading-tight">
-      <p class="font-semibold text-slate-100">BankLinker</p>
-      <p class="text-xs text-slate-500">Budget control</p>
+      <p class="font-semibold text-slate-100"><%= t("banklinker.app_name") %></p>
+      <p class="text-xs text-slate-500"><%= t("banklinker.tagline") %></p>
     </div>
   </div>
 
   <nav class="flex-1 px-3 py-6 space-y-1">
     <% nav_items = [
-      { label: "Inicio", path: root_path, icon: :home, active: current_page?(root_path) },
-      { label: "Categorizar", path: transactions_path, icon: :rectangle_stack, active: current_page?(transactions_path) },
-      { label: "Sobres", path: envelopes_path, icon: :tag, active: request.path.start_with?("/envelopes") },
-      { label: "Categorías Ivy", path: ivy_categories_path, icon: :squares_2x2, active: request.path.start_with?("/ivy_categories") },
-      { label: "Exportar CSV", path: export_transactions_path, icon: :arrow_down_tray, active: false }
+      { label: t("nav.home"), path: root_path, icon: :home, active: current_page?(root_path) },
+      { label: t("nav.categorize"), path: transactions_path, icon: :rectangle_stack, active: current_page?(transactions_path) },
+      { label: t("nav.envelopes"), path: envelopes_path, icon: :tag, active: request.path.start_with?("/envelopes") },
+      { label: t("nav.ivy_categories"), path: ivy_categories_path, icon: :squares_2x2, active: request.path.start_with?("/ivy_categories") },
+      { label: t("nav.export_csv"), path: export_transactions_path, icon: :arrow_down_tray, active: false }
     ] %>
 
     <% nav_items.each do |item| %>

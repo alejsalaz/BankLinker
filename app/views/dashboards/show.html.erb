@@ -4,8 +4,8 @@
 <section class="space-y-8 max-w-6xl">
   <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
     <div>
-      <h1 class="text-3xl font-bold text-slate-100">Panel de control</h1>
-      <p class="text-slate-400 mt-1">Sube un extracto, categoriza tus movimientos y expórtalos a Ivy Wallet.</p>
+      <h1 class="text-3xl font-bold text-slate-100"><%= t("dashboard.title") %></h1>
+      <p class="text-slate-400 mt-1"><%= t("dashboard.subtitle") %></p>
     </div>
   </div>
 
@@ -13,8 +13,8 @@
     <div class="rounded-xl border border-sky-500/30 bg-sky-500/10 text-sky-100 px-4 py-3 text-sm flex items-start gap-3">
       <span class="shrink-0 text-sky-300 mt-0.5"><%= heroicon :arrow_down_tray, klass: "w-5 h-5" %></span>
       <div>
-        <p class="font-medium text-sky-100">Formato del CSV exportado</p>
-        <p class="text-sky-200/80">Las fechas salen en <span class="font-mono">dd/MM/yyyy</span>. Al importar en Ivy Wallet selecciona ese formato en el wizard para evitar confusiones día/mes.</p>
+        <p class="font-medium text-sky-100"><%= t("dashboard.csv_format.title") %></p>
+        <p class="text-sky-200/80"><%= t("dashboard.csv_format.body_html").html_safe %></p>
       </div>
     </div>
   <% end %>
@@ -22,26 +22,26 @@
   <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
     <%= render "metric_card",
           icon: :clock,
-          label: "Pendientes por categorizar",
+          label: t("dashboard.metrics.pending"),
           value: @pending_count,
           accent: "amber",
-          action_label: ("Categorizar ahora" if @pending_count.positive?),
+          action_label: (t("dashboard.actions.categorize_now") if @pending_count.positive?),
           action_path: transactions_path %>
 
     <%= render "metric_card",
           icon: :check_circle,
-          label: "Procesadas",
+          label: t("dashboard.metrics.processed"),
           value: @processed_count,
           accent: "emerald",
-          action_label: ("Descargar CSV" if @processed_count.positive?),
+          action_label: (t("dashboard.actions.download_csv") if @processed_count.positive?),
           action_path: export_transactions_path %>
 
     <%= render "metric_card",
           icon: :tag,
-          label: "Sobres configurados",
+          label: t("dashboard.metrics.envelopes"),
           value: @envelopes_count,
           accent: "violet",
-          action_label: "Administrar sobres",
+          action_label: t("nav.envelopes"),
           action_path: envelopes_path %>
   </div>
 

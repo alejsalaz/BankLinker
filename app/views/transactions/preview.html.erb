@@ -1,16 +1,15 @@
-<% content_for :title, "Revisar importación - BankLinker" %>
-<% content_for :breadcrumb, "Preview importación" %>
+<% content_for :title, "#{t('transactions.preview.title')} - #{t('banklinker.app_name')}" %>
+<% content_for :breadcrumb, t("transactions.preview.title") %>
 
 <section class="space-y-6 max-w-6xl">
   <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
     <div>
-      <h1 class="text-3xl font-bold text-slate-100">Revisa los movimientos</h1>
+      <h1 class="text-3xl font-bold text-slate-100"><%= t("transactions.preview.title") %></h1>
       <p class="text-slate-400 mt-1">
-        Se detectaron <span class="text-slate-200 font-semibold"><%= @staging_transactions.size %></span> movimientos entre
-        <span class="text-slate-200 font-semibold"><%= @date_from.strftime("%d/%m/%Y") %></span>
-        y
-        <span class="text-slate-200 font-semibold"><%= @date_to.strftime("%d/%m/%Y") %></span>.
-        Desmarca los que no quieras importar y confirma.
+        <%= t("transactions.preview.subtitle_html",
+              count: @staging_transactions.size,
+              from: @date_from.strftime("%d/%m/%Y"),
+              to: @date_to.strftime("%d/%m/%Y")).html_safe %>
       </p>
     </div>
   </div>
@@ -22,19 +21,19 @@
           <label class="flex items-center gap-2 cursor-pointer">
             <input type="checkbox" id="toggle-all" checked
                    class="w-4 h-4 rounded border-slate-700 bg-slate-950 text-violet-500 focus:ring-violet-500/50" />
-            <span>Marcar / desmarcar todo</span>
+            <span><%= t("transactions.preview.toggle_all") %></span>
           </label>
         </div>
         <div class="flex items-center gap-2">
-          <%= button_to "Descartar todo",
+          <%= button_to t("transactions.preview.discard_all"),
                 discard_preview_transactions_path,
                 method: :delete,
-                form: { data: { turbo_confirm: "¿Descartar todos los movimientos detectados?" } },
+                form: { data: { turbo_confirm: t("transactions.preview.discard_all") + "?" } },
                 class: "inline-flex items-center gap-1 text-xs text-rose-300 hover:text-rose-200 bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/30 px-3 py-2 rounded-lg cursor-pointer transition" %>
           <button type="submit"
                   class="inline-flex items-center gap-2 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-semibold px-4 py-2 rounded-lg cursor-pointer transition">
             <%= heroicon :check_circle, klass: "w-4 h-4" %>
-            Confirmar importación
+            <%= t("transactions.preview.confirm_import") %>
           </button>
         </div>
       </div>
@@ -43,10 +42,10 @@
         <thead class="bg-slate-950/40 text-slate-500 uppercase text-xs">
           <tr>
             <th class="px-4 py-3 text-left font-medium w-10"></th>
-            <th class="px-4 py-3 text-left font-medium">Fecha</th>
-            <th class="px-4 py-3 text-left font-medium">Descripción</th>
-            <th class="px-4 py-3 text-left font-medium">Tipo</th>
-            <th class="px-4 py-3 text-right font-medium">Monto</th>
+            <th class="px-4 py-3 text-left font-medium"><%= t("transactions.preview.headers.date") %></th>
+            <th class="px-4 py-3 text-left font-medium"><%= t("transactions.preview.headers.description") %></th>
+            <th class="px-4 py-3 text-left font-medium"><%= t("transactions.preview.headers.type") %></th>
+            <th class="px-4 py-3 text-right font-medium"><%= t("transactions.preview.headers.amount") %></th>
           </tr>
         </thead>
         <tbody class="divide-y divide-slate-800">
@@ -62,9 +61,8 @@
                 <% type_classes = { "expense" => "bg-rose-500/10 border-rose-500/30 text-rose-300",
                                     "income"  => "bg-emerald-500/10 border-emerald-500/30 text-emerald-300",
                                     "transfer" => "bg-sky-500/10 border-sky-500/30 text-sky-300" } %>
-                <% type_label = { "expense" => "Gasto", "income" => "Ingreso", "transfer" => "Transferencia" } %>
                 <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium border <%= type_classes[tx.transaction_type] %>">
-                  <%= type_label[tx.transaction_type] %>
+                  <%= t("transactions.categorize.type.#{tx.transaction_type}") %>
                 </span>
               </td>
               <td class="px-4 py-3 text-right font-mono text-slate-200 whitespace-nowrap">

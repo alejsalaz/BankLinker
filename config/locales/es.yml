@@ -1,0 +1,132 @@
+es:
+  date:
+    formats:
+      default: "%d/%m/%Y"
+      short: "%d/%m/%Y"
+      long: "%d de %B de %Y"
+    day_names:
+      - domingo
+      - lunes
+      - martes
+      - miércoles
+      - jueves
+      - viernes
+      - sábado
+    abbr_day_names: [dom, lun, mar, mié, jue, vie, sáb]
+    month_names:
+      -
+      - enero
+      - febrero
+      - marzo
+      - abril
+      - mayo
+      - junio
+      - julio
+      - agosto
+      - septiembre
+      - octubre
+      - noviembre
+      - diciembre
+    abbr_month_names: [~, ene, feb, mar, abr, may, jun, jul, ago, sep, oct, nov, dic]
+  time:
+    formats:
+      default: "%d/%m/%Y %H:%M"
+      short: "%d/%m %H:%M"
+      long: "%d de %B de %Y a las %H:%M"
+  number:
+    format:
+      separator: ","
+      delimiter: "."
+      precision: 2
+    currency:
+      format:
+        unit: "$"
+        format: "%u%n"
+        separator: ","
+        delimiter: "."
+        precision: 0
+
+  banklinker:
+    app_name: BankLinker
+    tagline: Budget control
+
+  nav:
+    home: Inicio
+    categorize: Categorizar
+    envelopes: Sobres
+    ivy_categories: Categorías Ivy
+    export_csv: Exportar CSV
+    upload_statement: Subir extracto
+
+  dashboard:
+    title: Panel de control
+    subtitle: Sube un extracto, categoriza tus movimientos y expórtalos a Ivy Wallet.
+    metrics:
+      pending: Pendientes por categorizar
+      processed: Procesadas
+      envelopes: Sobres activos
+    actions:
+      categorize_now: Categorizar ahora
+      download_csv: Descargar CSV
+    csv_format:
+      title: Formato del CSV exportado
+      body_html: Las fechas salen en <span class="font-mono">dd/MM/yyyy</span>. Al importar en Ivy Wallet selecciona ese formato en el wizard para evitar confusiones día/mes.
+
+  envelopes:
+    title: Sobres
+    subtitle: Tus sobres de envelope budgeting. Se usan como botones en la vista de categorización.
+    create: Crear nuevo sobre
+    name: Nombre
+    color: Color
+    movements: Movimientos
+    actions:
+      edit: Editar
+      delete: Eliminar
+    empty: Aún no tienes sobres. Crea uno arriba.
+
+  ivy_categories:
+    title: Categorías Ivy
+    subtitle: Lista de categorías que exportarás a Ivy Wallet. Son opcionales por transacción.
+    create: Crear nueva categoría
+    empty: Aún no tienes categorías.
+
+  transactions:
+    categorize:
+      title: Categorizar
+      subtitle: Asigna cada movimiento a un sobre. Usa el panel de detalles para afinar título, descripción o categoría Ivy.
+      remaining_one: "Queda %{count} movimiento"
+      remaining_other: "Quedan %{count} movimientos"
+      assign_to_envelope: Asignar a sobre
+      details_optional: Detalles (opcional)
+      csv_title: Título (para CSV)
+      description: Descripción
+      ivy_category: Categoría Ivy
+      no_category: — Sin categoría —
+      amount: Monto
+      type:
+        expense: Gasto
+        income: Ingreso
+        transfer: Transferencia
+      queue:
+        title: Cola pendiente
+        clear: Limpiar cola
+        confirm_clear: ¿Seguro que quieres limpiar toda la cola?
+      all_clear:
+        title: Todo al día
+        body: No hay movimientos pendientes. Sube otro extracto o exporta lo categorizado.
+      no_envelopes:
+        title: No tienes sobres configurados
+        body: Crea al menos un sobre antes de categorizar.
+        cta: Configurar sobres
+
+    preview:
+      title: Revisa los movimientos
+      subtitle_html: "Se detectaron <span class=\"text-slate-200 font-semibold\">%{count}</span> movimientos entre <span class=\"text-slate-200 font-semibold\">%{from}</span> y <span class=\"text-slate-200 font-semibold\">%{to}</span>. Desmarca los que no quieras importar y confirma."
+      toggle_all: Marcar / desmarcar todo
+      discard_all: Descartar todo
+      confirm_import: Confirmar importación
+      headers:
+        date: Fecha
+        description: Descripción
+        type: Tipo
+        amount: Monto
