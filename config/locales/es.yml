@@ -49,6 +49,17 @@ es:
   banklinker:
     app_name: BankLinker
     tagline: Budget control
+    tips:
+      - Los extractos de RappiPay vienen cifrados. Guarda tu contraseña a mano.
+      - Para OCR de imágenes necesitas tener instalado tesseract-ocr en tu sistema.
+      - Usa el preview para descartar movimientos duplicados antes de categorizarlos.
+      - El filtro de rango de fechas permite importar solo el mes que te interesa.
+      - Las categorías son opcionales por movimiento y se exportan en el CSV.
+      - Los sobres son los botones de categorización. Más sobres, más granularidad.
+      - Usa "Empezar de cero" si quieres probar con un archivo nuevo sin mezclar datos.
+      - El botón del ojito en el campo de contraseña te deja verificar lo que escribiste.
+      - Todo se procesa localmente en tu máquina, los archivos no salen de ahí.
+      - RappiCard solo tiene gastos; RappiCuenta detecta ingresos y gastos según el signo.
 
   nav:
     home: Inicio

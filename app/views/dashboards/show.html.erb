@@ -78,12 +78,20 @@
 
           <div>
             <%= f.label :password, "Contraseña del PDF", class: "block text-xs font-medium uppercase tracking-wide text-slate-400 mb-2" %>
-            <div class="relative">
+            <div class="relative" data-password-toggle>
               <span class="absolute inset-y-0 left-3 flex items-center text-slate-500">
                 <%= heroicon :lock_closed, klass: "w-4 h-4" %>
               </span>
               <%= f.password_field :password, autocomplete: "off", placeholder: "Opcional",
-                    class: "block w-full rounded-lg bg-slate-950 border border-slate-800 text-slate-100 text-sm pl-9 pr-3 py-2.5 focus:border-violet-500 focus:ring-1 focus:ring-violet-500" %>
+                    data: { password_field: true },
+                    class: "block w-full rounded-lg bg-slate-950 border border-slate-800 text-slate-100 text-sm pl-9 pr-10 py-2.5 focus:border-violet-500 focus:ring-1 focus:ring-violet-500" %>
+              <button type="button"
+                      data-password-visible="false"
+                      aria-label="Mostrar u ocultar contraseña"
+                      class="absolute inset-y-0 right-2 flex items-center text-slate-500 hover:text-slate-200 transition cursor-pointer px-1">
+                <span data-icon="eye"><%= heroicon :eye, klass: "w-4 h-4" %></span>
+                <span data-icon="eye-off" class="hidden"><%= heroicon :eye_slash, klass: "w-4 h-4" %></span>
+              </button>
             </div>
           </div>
         </div>
@@ -135,3 +143,22 @@
     </div>
   </div>
 </section>
+
+<script type="module">
+  document.querySelectorAll("[data-password-toggle]").forEach((wrapper) => {
+    const input = wrapper.querySelector("[data-password-field]");
+    const button = wrapper.querySelector("[data-password-visible]");
+    const iconEye = wrapper.querySelector('[data-icon="eye"]');
+    const iconEyeOff = wrapper.querySelector('[data-icon="eye-off"]');
+    if (!input || !button) return;
+
+    button.addEventListener("click", () => {
+      const isVisible = button.getAttribute("data-password-visible") === "true";
+      const nextVisible = !isVisible;
+      input.type = nextVisible ? "text" : "password";
+      button.setAttribute("data-password-visible", String(nextVisible));
+      iconEye.classList.toggle("hidden", nextVisible);
+      iconEyeOff.classList.toggle("hidden", !nextVisible);
+    });
+  });
+</script>
