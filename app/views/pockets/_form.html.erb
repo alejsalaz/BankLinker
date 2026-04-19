@@ -14,8 +14,14 @@
 
     <div>
       <%= f.label :color, "Color", class: "block text-xs font-medium uppercase tracking-wide text-slate-400 mb-2" %>
-      <%= f.select :color, Pocket::AVAILABLE_COLORS.map { |c| [c.titleize, c] }, {},
-            class: "block w-full rounded-lg bg-slate-950 border border-slate-800 text-slate-100 text-sm px-3 py-2.5 focus:border-violet-500 focus:ring-1 focus:ring-violet-500" %>
+      <div class="grid grid-cols-10 gap-2">
+        <% Pocket::AVAILABLE_COLORS.each do |color| %>
+          <label class="relative cursor-pointer group" title="<%= color.titleize %>">
+            <%= f.radio_button :color, color, class: "peer sr-only" %>
+            <span class="block w-8 h-8 rounded-lg bg-<%= color %>-500 ring-2 ring-transparent peer-checked:ring-white peer-checked:ring-offset-2 peer-checked:ring-offset-slate-900 hover:scale-110 transition"></span>
+          </label>
+        <% end %>
+      </div>
     </div>
   </div>
 

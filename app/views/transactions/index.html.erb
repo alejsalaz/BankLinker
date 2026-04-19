@@ -1,19 +1,50 @@
 <% content_for :title, "Categorizar - BankLinker" %>
 <% content_for :breadcrumb, "Categorizar" %>
 
-<section class="space-y-8 max-w-3xl mx-auto">
-  <div class="flex items-center justify-between">
+<section class="space-y-8 max-w-5xl">
+  <div class="flex items-center justify-between flex-wrap gap-3">
     <div>
       <h1 class="text-3xl font-bold text-slate-100">Categorizar</h1>
       <p class="text-slate-400 mt-1">Un movimiento, un click. Vamos a ponerle nombre a cada gasto.</p>
     </div>
-    <span id="remaining_counter" class="inline-flex items-center gap-2 text-xs uppercase tracking-wide text-slate-400 bg-slate-900 border border-slate-800 rounded-full px-3 py-1.5">
-      <span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
-      <%= pluralize(@remaining, "pendiente") %>
-    </span>
+    <div class="flex items-center gap-3">
+      <span id="remaining_counter" class="inline-flex items-center gap-2 text-xs uppercase tracking-wide text-slate-400 bg-slate-900 border border-slate-800 rounded-full px-3 py-1.5">
+        <span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
+        <%= pluralize(@remaining, "pendiente") %>
+      </span>
+      <% if @remaining.positive? %>
+        <%= button_to clear_pending_transactions_path,
+              method: :delete,
+              form: { data: { turbo_confirm: "¿Seguro que quieres borrar las #{@remaining} transacciones pendientes? Esta acción no se puede deshacer." } },
+              class: "inline-flex items-center gap-2 text-xs text-rose-300 hover:text-rose-200 bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/30 px-3 py-1.5 rounded-lg cursor-pointer transition" do %>
+          <%= heroicon :trash, klass: "w-4 h-4" %>
+          Limpiar cola
+        <% end %>
+      <% end %>
+    </div>
   </div>
 
-  <%= turbo_frame_tag "current_card" do %>
-    <%= render "card", transaction: @transaction, pockets: @pockets %>
-  <% end %>
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <div class="lg:col-span-2">
+      <%= turbo_frame_tag "current_card" do %>
+        <%= render "card", transaction: @transaction, pockets: @pockets %>
+      <% end %>
+    </div>
+
+    <aside class="bg-slate-900 rounded-2xl border border-slate-800 overflow-hidden">
+      <div class="px-5 py-4 border-b border-slate-800 flex items-center justify-between">
+        <h2 class="text-xs font-semibold uppercase tracking-wide text-slate-400">Cola pendiente</h2>
+        <span class="text-xs text-slate-500"><%= @pending_transactions.size %></span>
+      </div>
+      <ul id="pending_queue" class="divide-y divide-slate-800 max-h-[28rem] overflow-y-auto">
+        <% if @pending_transactions.any? %>
+          <% @pending_transactions.each do |tx| %>
+            <%= render "queue_item", tx: tx %>
+          <% end %>
+        <% else %>
+          <li class="px-5 py-6 text-center text-sm text-slate-500">Nada pendiente por aquí.</li>
+        <% end %>
+      </ul>
+    </aside>
+  </div>
 </section>

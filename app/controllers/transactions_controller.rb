@@ -5,11 +5,12 @@ class TransactionsController < ApplicationController
 
   def index
     @transaction = Transaction.next_pending
-    @remaining = Transaction.pending.count
+    @pending_transactions = Transaction.pending.order(:date, :id)
+    @remaining = @pending_transactions.size
   end
 
   def categorize
-    transaction = Transaction.find(params[:id])
+    @categorized_transaction = Transaction.find(params[:id])
     pocket = Pocket.find_by(id: params[:pocket_id])
 
     if pocket.nil?
@@ -17,7 +18,7 @@ class TransactionsController < ApplicationController
       return
     end
 
-    transaction.update!(pocket: pocket, status: :processed)
+    @categorized_transaction.update!(pocket: pocket, status: :processed)
 
     @next_transaction = Transaction.next_pending
     @remaining = Transaction.pending.count
@@ -26,6 +27,11 @@ class TransactionsController < ApplicationController
       format.turbo_stream
       format.html { redirect_to transactions_path }
     end
+  end
+
+  def clear_pending
+    removed = Transaction.pending.delete_all
+    redirect_to transactions_path, notice: "Cola limpiada: #{removed} transacciones eliminadas."
   end
 
   def export
