@@ -14,6 +14,7 @@
       { label: "Inicio", path: root_path, icon: :home, active: current_page?(root_path) },
       { label: "Categorizar", path: transactions_path, icon: :rectangle_stack, active: current_page?(transactions_path) },
       { label: "Sobres", path: envelopes_path, icon: :tag, active: request.path.start_with?("/envelopes") },
+      { label: "Categorías Ivy", path: ivy_categories_path, icon: :squares_2x2, active: request.path.start_with?("/ivy_categories") },
       { label: "Exportar CSV", path: export_transactions_path, icon: :arrow_down_tray, active: false }
     ] %>
 

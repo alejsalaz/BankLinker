@@ -19,4 +19,5 @@ Rails.application.routes.draw do
   end
 
   resources :envelopes, except: [:show]
+  resources :ivy_categories, except: [:show]
 end

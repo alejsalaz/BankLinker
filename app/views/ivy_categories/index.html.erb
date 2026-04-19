@@ -1,0 +1,70 @@
+<% content_for :title, "Categorías Ivy - BankLinker" %>
+<% content_for :breadcrumb, "Categorías Ivy" %>
+
+<section class="space-y-8 max-w-5xl">
+  <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+    <div>
+      <h1 class="text-3xl font-bold text-slate-100">Categorías Ivy</h1>
+      <p class="text-slate-400 mt-1">Lista de categorías que exportarás a Ivy Wallet. Son opcionales por transacción.</p>
+    </div>
+  </div>
+
+  <div class="bg-slate-900 rounded-2xl border border-slate-800 p-6">
+    <div class="flex items-start justify-between mb-5">
+      <div>
+        <h2 class="text-lg font-semibold text-slate-100">Crear nueva categoría</h2>
+        <p class="text-sm text-slate-400 mt-1">Usa el mismo nombre que tienes en Ivy Wallet para que el import las reconozca.</p>
+      </div>
+      <span class="w-10 h-10 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 flex items-center justify-center">
+        <%= heroicon :plus, klass: "w-5 h-5" %>
+      </span>
+    </div>
+    <%= render "form", ivy_category: @ivy_category %>
+  </div>
+
+  <div class="bg-slate-900 rounded-2xl border border-slate-800 overflow-hidden">
+    <div class="px-6 py-4 border-b border-slate-800 flex items-center justify-between">
+      <h2 class="text-sm font-semibold uppercase tracking-wide text-slate-400">Tus categorías</h2>
+      <span class="text-xs text-slate-500"><%= pluralize(@ivy_categories.size, "categoría") %></span>
+    </div>
+    <% if @ivy_categories.any? %>
+      <table class="w-full text-sm">
+        <thead class="bg-slate-950/40 text-slate-500 uppercase text-xs">
+          <tr>
+            <th class="px-6 py-3 text-left font-medium">#</th>
+            <th class="px-6 py-3 text-left font-medium">Nombre</th>
+            <th class="px-6 py-3 text-left font-medium">Movimientos</th>
+            <th class="px-6 py-3 text-right font-medium">Acciones</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-800">
+          <% @ivy_categories.each do |category| %>
+            <tr class="hover:bg-slate-800/40 transition">
+              <td class="px-6 py-4 text-slate-500"><%= category.position %></td>
+              <td class="px-6 py-4 font-medium text-slate-100"><%= category.name %></td>
+              <td class="px-6 py-4 text-slate-400"><%= category.transactions.count %></td>
+              <td class="px-6 py-4 text-right">
+                <div class="inline-flex items-center gap-2">
+                  <%= link_to edit_ivy_category_path(category),
+                        class: "inline-flex items-center gap-1 text-xs text-slate-300 hover:text-slate-100 bg-slate-800 hover:bg-slate-700 px-2.5 py-1.5 rounded-lg transition" do %>
+                    <%= heroicon :pencil, klass: "w-3.5 h-3.5" %>
+                    Editar
+                  <% end %>
+                  <%= button_to ivy_category_path(category),
+                        method: :delete,
+                        form: { data: { turbo_confirm: "¿Eliminar '#{category.name}'?" } },
+                        class: "inline-flex items-center gap-1 text-xs text-rose-300 hover:text-rose-200 bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/30 px-2.5 py-1.5 rounded-lg cursor-pointer transition" do %>
+                    <%= heroicon :trash, klass: "w-3.5 h-3.5" %>
+                    Eliminar
+                  <% end %>
+                </div>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    <% else %>
+      <div class="px-6 py-10 text-center text-slate-400">Aún no tienes categorías.</div>
+    <% end %>
+  </div>
+</section>

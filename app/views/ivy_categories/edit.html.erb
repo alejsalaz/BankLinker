@@ -1,0 +1,13 @@
+<% content_for :title, "Editar categoría - BankLinker" %>
+<% content_for :breadcrumb, "Editar categoría" %>
+
+<section class="max-w-xl space-y-6">
+  <div>
+    <h1 class="text-3xl font-bold text-slate-100">Editar categoría</h1>
+    <p class="text-slate-400 mt-1">Ajusta el nombre de <span class="text-slate-200 font-medium"><%= @ivy_category.name %></span>.</p>
+  </div>
+
+  <div class="bg-slate-900 rounded-2xl border border-slate-800 p-6">
+    <%= render "form", ivy_category: @ivy_category %>
+  </div>
+</section>
