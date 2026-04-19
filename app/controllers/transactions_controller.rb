@@ -87,17 +87,44 @@ class TransactionsController < ApplicationController
     permitted
   end
 
+  # Formato pensado para el import de Ivy Wallet. Usa las columnas en español
+  # que Alejo indicó. La fecha va en dd/MM/yyyy; al importar en Ivy hay que
+  # elegir ese formato en el wizard.
+  IVY_TYPE_LABELS = {
+    "expense" => "Expense",
+    "income" => "Income",
+    "transfer" => "Transfer"
+  }.freeze
+
   def build_csv
     CSV.generate(headers: true) do |csv|
-      csv << %w[date amount title account_name currency_code type]
-      Transaction.processed.includes(:envelope).order(:date, :id).find_each do |t|
+      csv << [
+        "Fecha",
+        "Tipo de transacción",
+        "Cantidad",
+        "Moneda",
+        "Cuenta",
+        "Categoría",
+        "Título",
+        "Descripción",
+        "Receptor",
+        "Moneda de cambio",
+        "Cantidad de cambio"
+      ]
+
+      Transaction.processed.includes(:envelope, :ivy_category).order(:date, :id).find_each do |t|
         csv << [
-          t.date.iso8601,
-          t.amount.to_s,
-          t.description,
+          t.date.strftime("%d/%m/%Y"),
+          IVY_TYPE_LABELS[t.transaction_type],
+          t.csv_amount.to_s("F"),
+          t.currency,
           t.envelope&.name,
-          "COP",
-          "EXPENSE"
+          t.ivy_category&.name,
+          t.csv_title,
+          t.description,
+          t.receiver,
+          t.exchange_currency,
+          t.exchange_amount&.to_s("F")
         ]
       end
     end

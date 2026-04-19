@@ -9,6 +9,16 @@
     </div>
   </div>
 
+  <% if @processed_count.positive? %>
+    <div class="rounded-xl border border-sky-500/30 bg-sky-500/10 text-sky-100 px-4 py-3 text-sm flex items-start gap-3">
+      <span class="shrink-0 text-sky-300 mt-0.5"><%= heroicon :arrow_down_tray, klass: "w-5 h-5" %></span>
+      <div>
+        <p class="font-medium text-sky-100">Formato del CSV exportado</p>
+        <p class="text-sky-200/80">Las fechas salen en <span class="font-mono">dd/MM/yyyy</span>. Al importar en Ivy Wallet selecciona ese formato en el wizard para evitar confusiones día/mes.</p>
+      </div>
+    </div>
+  <% end %>
+
   <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
     <%= render "metric_card",
           icon: :clock,
