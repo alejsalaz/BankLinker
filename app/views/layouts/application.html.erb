@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html class="dark">
   <head>
     <title><%= content_for(:title) || "Bank Linker" %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -11,44 +11,41 @@
 
     <%= yield :head %>
 
-    <%# Enable PWA manifest for installable apps (make sure to enable in config/routes.rb too!) %>
-    <%#= tag.link rel: "manifest", href: pwa_manifest_path(format: :json) %>
-
     <link rel="icon" href="/icon.png" type="image/png">
     <link rel="icon" href="/icon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="/icon.png">
 
-    <%# Includes all stylesheet files in app/assets/stylesheets %>
     <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
   </head>
 
-  <body class="bg-slate-50 text-slate-900 min-h-screen">
-    <header class="bg-white border-b border-slate-200">
-      <div class="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
-        <%= link_to "BankLinker", root_path, class: "text-xl font-bold text-slate-900" %>
-        <nav class="flex items-center gap-4 text-sm">
-          <%= link_to "Dashboard", root_path, class: "text-slate-700 hover:text-slate-900" %>
-          <%= link_to "Categorizar", transactions_path, class: "text-slate-700 hover:text-slate-900" %>
-          <%= link_to "Pockets", pockets_path, class: "text-slate-700 hover:text-slate-900" %>
-          <%= link_to "Exportar CSV", export_transactions_path, class: "text-emerald-700 hover:text-emerald-900 font-medium" %>
-        </nav>
-      </div>
-    </header>
+  <body class="bg-slate-950 text-slate-100 min-h-screen antialiased">
+    <div class="flex min-h-screen">
+      <%= render "shared/sidebar" %>
 
-    <% if notice.present? %>
-      <div class="max-w-5xl mx-auto px-6 mt-4">
-        <div class="bg-emerald-100 border border-emerald-300 text-emerald-800 rounded-lg px-4 py-2"><%= notice %></div>
-      </div>
-    <% end %>
-    <% if alert.present? %>
-      <div class="max-w-5xl mx-auto px-6 mt-4">
-        <div class="bg-rose-100 border border-rose-300 text-rose-800 rounded-lg px-4 py-2"><%= alert %></div>
-      </div>
-    <% end %>
+      <div class="flex-1 lg:pl-64">
+        <%= render "shared/topbar" %>
 
-    <main class="max-w-5xl mx-auto px-6 py-8">
-      <%= yield %>
-    </main>
+        <% if notice.present? %>
+          <div class="px-6 lg:px-10 mt-4">
+            <div class="bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 rounded-xl px-4 py-3 text-sm flex items-center gap-2">
+              <%= heroicon :check_circle, klass: "w-5 h-5" %>
+              <%= notice %>
+            </div>
+          </div>
+        <% end %>
+        <% if alert.present? %>
+          <div class="px-6 lg:px-10 mt-4">
+            <div class="bg-rose-500/10 border border-rose-500/30 text-rose-300 rounded-xl px-4 py-3 text-sm">
+              <%= alert %>
+            </div>
+          </div>
+        <% end %>
+
+        <main class="px-6 lg:px-10 py-8">
+          <%= yield %>
+        </main>
+      </div>
+    </div>
   </body>
 </html>

@@ -2,7 +2,8 @@ class DashboardsController < ApplicationController
   def show
     @pending_count = Transaction.pending.count
     @processed_count = Transaction.processed.count
-    @pockets_count = Pocket.count
+    @pockets = Pocket.ordered
+    @pockets_count = @pockets.size
     @extractor_types = Extractors::Dispatcher.available_types
   end
 

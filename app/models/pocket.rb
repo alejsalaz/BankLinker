@@ -16,11 +16,19 @@ class Pocket < ApplicationRecord
   scope :ordered, -> { order(:position, :id) }
 
   def button_classes
-    "bg-#{color}-600 hover:bg-#{color}-700"
+    "bg-#{color}-500/10 hover:bg-#{color}-500/20 border border-#{color}-500/30 text-#{color}-300 hover:text-#{color}-200"
   end
 
   def badge_classes
-    "bg-#{color}-100 text-#{color}-800 border-#{color}-200"
+    "bg-#{color}-500/10 text-#{color}-300 border-#{color}-500/30"
+  end
+
+  def dot_classes
+    "bg-#{color}-500"
+  end
+
+  def accent_text_classes
+    "text-#{color}-400"
   end
 
   private

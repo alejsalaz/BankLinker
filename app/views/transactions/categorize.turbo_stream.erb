@@ -5,7 +5,8 @@
 <% end %>
 
 <%= turbo_stream.replace "remaining_counter" do %>
-  <span id="remaining_counter" class="text-sm text-slate-500">
+  <span id="remaining_counter" class="inline-flex items-center gap-2 text-xs uppercase tracking-wide text-slate-400 bg-slate-900 border border-slate-800 rounded-full px-3 py-1.5">
+    <span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
     <%= pluralize(@remaining, "pendiente") %>
   </span>
 <% end %>

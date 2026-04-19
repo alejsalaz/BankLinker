@@ -1,58 +1,116 @@
 <% content_for :title, "Dashboard - BankLinker" %>
+<% content_for :breadcrumb, "Dashboard" %>
 
-<section class="space-y-8">
-  <div>
-    <h1 class="text-3xl font-bold">Importar extracto</h1>
-    <p class="text-slate-600 mt-1">Sube un PDF o imagen del extracto para convertirlo en transacciones pendientes de categorizar.</p>
-  </div>
-
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-    <div class="bg-white rounded-xl border border-slate-200 p-5">
-      <p class="text-sm text-slate-500">Pendientes por categorizar</p>
-      <p class="text-4xl font-bold text-slate-900 mt-1"><%= @pending_count %></p>
-      <% if @pending_count.positive? %>
-        <%= link_to "Categorizar ahora", transactions_path, class: "inline-block mt-3 text-indigo-600 hover:text-indigo-800 font-medium" %>
-      <% end %>
-    </div>
-    <div class="bg-white rounded-xl border border-slate-200 p-5">
-      <p class="text-sm text-slate-500">Procesadas</p>
-      <p class="text-4xl font-bold text-emerald-600 mt-1"><%= @processed_count %></p>
-      <% if @processed_count.positive? %>
-        <%= link_to "Descargar CSV para Ivy Wallet", export_transactions_path, class: "inline-block mt-3 text-emerald-700 hover:text-emerald-900 font-medium" %>
-      <% end %>
-    </div>
-    <div class="bg-white rounded-xl border border-slate-200 p-5">
-      <p class="text-sm text-slate-500">Pockets configurados</p>
-      <p class="text-4xl font-bold text-indigo-600 mt-1"><%= @pockets_count %></p>
-      <%= link_to "Administrar pockets", pockets_path, class: "inline-block mt-3 text-indigo-600 hover:text-indigo-800 font-medium" %>
+<section class="space-y-8 max-w-6xl">
+  <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+    <div>
+      <h1 class="text-3xl font-bold text-slate-100">Panel de control</h1>
+      <p class="text-slate-400 mt-1">Sube un extracto, categoriza tus movimientos y expórtalos a Ivy Wallet.</p>
     </div>
   </div>
 
-  <div class="bg-white rounded-xl border border-slate-200 p-6">
-    <h2 class="text-xl font-semibold mb-4">Subir extracto</h2>
-    <%= form_with url: upload_dashboard_path, method: :post, multipart: true, local: true, class: "space-y-4" do |f| %>
-      <div>
-        <%= f.label :extractor_type, "Tipo de extracto", class: "block text-sm font-medium text-slate-700 mb-1" %>
-        <%= f.select :extractor_type, @extractor_types.map { |t| [t.to_s.titleize, t] }, {}, class: "block w-full rounded-lg border-slate-300 focus:border-indigo-500 focus:ring-indigo-500" %>
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+    <%= render "metric_card",
+          icon: :clock,
+          label: "Pendientes por categorizar",
+          value: @pending_count,
+          accent: "amber",
+          action_label: ("Categorizar ahora" if @pending_count.positive?),
+          action_path: transactions_path %>
+
+    <%= render "metric_card",
+          icon: :check_circle,
+          label: "Procesadas",
+          value: @processed_count,
+          accent: "emerald",
+          action_label: ("Descargar CSV" if @processed_count.positive?),
+          action_path: export_transactions_path %>
+
+    <%= render "metric_card",
+          icon: :tag,
+          label: "Pockets configurados",
+          value: @pockets_count,
+          accent: "violet",
+          action_label: "Administrar pockets",
+          action_path: pockets_path %>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
+    <div class="lg:col-span-2 bg-slate-900 rounded-2xl border border-slate-800 p-6">
+      <div class="flex items-start justify-between mb-6">
+        <div>
+          <h2 class="text-lg font-semibold text-slate-100">Subir extracto</h2>
+          <p class="text-sm text-slate-400 mt-1">Aceptamos PDF y imágenes. Los PDFs protegidos necesitan contraseña.</p>
+        </div>
+        <span class="w-10 h-10 rounded-lg bg-violet-500/10 border border-violet-500/30 flex items-center justify-center text-violet-300">
+          <%= heroicon :document_arrow_up, klass: "w-5 h-5" %>
+        </span>
       </div>
 
-      <div>
-        <%= f.label :file, "Archivo (PDF o imagen)", class: "block text-sm font-medium text-slate-700 mb-1" %>
-        <%= f.file_field :file, accept: ".pdf,image/*", required: true, class: "block w-full text-sm text-slate-700 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-indigo-600 file:text-white hover:file:bg-indigo-700" %>
+      <%= form_with url: upload_dashboard_path, method: :post, multipart: true, local: true, class: "space-y-5" do |f| %>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <%= f.label :extractor_type, "Tipo de extracto", class: "block text-xs font-medium uppercase tracking-wide text-slate-400 mb-2" %>
+            <%= f.select :extractor_type, @extractor_types.map { |t| [t.to_s.titleize, t] }, {},
+                  class: "block w-full rounded-lg bg-slate-950 border border-slate-800 text-slate-100 text-sm px-3 py-2.5 focus:border-violet-500 focus:ring-1 focus:ring-violet-500" %>
+          </div>
+
+          <div>
+            <%= f.label :password, "Contraseña del PDF", class: "block text-xs font-medium uppercase tracking-wide text-slate-400 mb-2" %>
+            <div class="relative">
+              <span class="absolute inset-y-0 left-3 flex items-center text-slate-500">
+                <%= heroicon :lock_closed, klass: "w-4 h-4" %>
+              </span>
+              <%= f.password_field :password, autocomplete: "off", placeholder: "Opcional",
+                    class: "block w-full rounded-lg bg-slate-950 border border-slate-800 text-slate-100 text-sm pl-9 pr-3 py-2.5 focus:border-violet-500 focus:ring-1 focus:ring-violet-500" %>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <%= f.label :file, "Archivo", class: "block text-xs font-medium uppercase tracking-wide text-slate-400 mb-2" %>
+          <label class="flex flex-col items-center justify-center gap-2 border border-dashed border-slate-700 hover:border-violet-500/50 rounded-xl px-6 py-8 bg-slate-950/60 cursor-pointer transition">
+            <span class="w-10 h-10 rounded-full bg-violet-500/10 text-violet-300 flex items-center justify-center">
+              <%= heroicon :arrow_up_tray, klass: "w-5 h-5" %>
+            </span>
+            <span class="text-sm text-slate-300">Arrastra o selecciona un PDF / imagen</span>
+            <span class="text-xs text-slate-500">Se procesa localmente, no se guarda el archivo.</span>
+            <%= f.file_field :file, accept: ".pdf,image/*", required: true,
+                  class: "mt-1 block w-full text-xs text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-violet-600 file:text-white file:text-sm hover:file:bg-violet-500 cursor-pointer" %>
+          </label>
+        </div>
+
+        <div class="flex items-center justify-between pt-2">
+          <p class="text-xs text-slate-500">Tip: para OCR necesitas <code class="bg-slate-800 px-1.5 py-0.5 rounded text-slate-300">tesseract-ocr</code> instalado.</p>
+          <%= f.submit "Procesar extracto",
+                class: "inline-flex items-center gap-2 bg-violet-600 hover:bg-violet-500 text-white font-semibold px-5 py-2.5 rounded-lg cursor-pointer transition" %>
+        </div>
+      <% end %>
+    </div>
+
+    <div class="bg-slate-900 rounded-2xl border border-slate-800 p-6">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-lg font-semibold text-slate-100">Pockets</h2>
+        <%= link_to pockets_path, class: "text-xs text-violet-400 hover:text-violet-300 inline-flex items-center gap-1" do %>
+          Ver todos <%= heroicon :chevron_right, klass: "w-3.5 h-3.5" %>
+        <% end %>
       </div>
 
-      <div>
-        <%= f.label :password, "Contraseña del PDF (opcional)", class: "block text-sm font-medium text-slate-700 mb-1" %>
-        <%= f.password_field :password, autocomplete: "off", placeholder: "Déjalo vacío si el PDF no tiene contraseña", class: "block w-full rounded-lg border-slate-300 focus:border-indigo-500 focus:ring-indigo-500" %>
-        <p class="text-xs text-slate-500 mt-1">Los extractos de Rappi, Nequi y bancos suelen venir cifrados.</p>
-      </div>
-
-      <div>
-        <%= f.submit "Procesar extracto", class: "bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-5 py-2.5 rounded-lg cursor-pointer" %>
-      </div>
-    <% end %>
-    <p class="text-xs text-slate-500 mt-4">
-      Tip: para OCR necesitas <code class="bg-slate-100 px-1 py-0.5 rounded">tesseract-ocr</code> instalado en el sistema.
-    </p>
+      <% if @pockets.any? %>
+        <ul class="space-y-2">
+          <% @pockets.each do |pocket| %>
+            <li class="flex items-center justify-between px-3 py-2.5 rounded-lg bg-slate-950/60 border border-slate-800">
+              <div class="flex items-center gap-3">
+                <span class="w-2.5 h-2.5 rounded-full <%= pocket.dot_classes %>"></span>
+                <span class="text-sm text-slate-200"><%= pocket.name %></span>
+              </div>
+              <span class="text-xs text-slate-500"><%= pocket.transactions.count %></span>
+            </li>
+          <% end %>
+        </ul>
+      <% else %>
+        <p class="text-sm text-slate-400">Aún no hay pockets. <%= link_to "Crea el primero", pockets_path, class: "text-violet-400 hover:text-violet-300" %>.</p>
+      <% end %>
+    </div>
   </div>
 </section>

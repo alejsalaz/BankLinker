@@ -1,0 +1,18 @@
+<% action_label ||= nil %>
+<% action_path ||= nil %>
+
+<div class="bg-slate-900 rounded-2xl border border-slate-800 p-5 hover:border-slate-700 transition">
+  <div class="flex items-start justify-between">
+    <span class="w-10 h-10 rounded-lg bg-<%= accent %>-500/10 border border-<%= accent %>-500/30 text-<%= accent %>-300 flex items-center justify-center">
+      <%= heroicon icon, klass: "w-5 h-5" %>
+    </span>
+  </div>
+  <p class="text-xs uppercase tracking-wide text-slate-500 mt-5"><%= label %></p>
+  <p class="text-3xl font-bold text-slate-100 mt-1"><%= value %></p>
+  <% if action_label && action_path %>
+    <%= link_to action_path, class: "inline-flex items-center gap-1 mt-3 text-sm text-#{accent}-400 hover:text-#{accent}-300" do %>
+      <%= action_label %>
+      <%= heroicon :chevron_right, klass: "w-3.5 h-3.5" %>
+    <% end %>
+  <% end %>
+</div>
