@@ -12,6 +12,11 @@
               to: @date_to.strftime("%d/%m/%Y")).html_safe %>
       </p>
     </div>
+    <%= button_to t("transactions.preview.discard_all"),
+          discard_preview_transactions_path,
+          method: :delete,
+          form: { data: { turbo_confirm: t("transactions.preview.discard_all") + "?" } },
+          class: "inline-flex items-center gap-1 text-xs text-rose-300 hover:text-rose-200 bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/30 px-3 py-2 rounded-lg cursor-pointer transition shrink-0" %>
   </div>
 
   <%= form_with url: confirm_preview_transactions_path, method: :post, local: true, id: "preview-form" do %>
@@ -23,19 +28,13 @@
                    class="w-4 h-4 rounded border-slate-700 bg-slate-950 text-violet-500 focus:ring-violet-500/50" />
             <span><%= t("transactions.preview.toggle_all") %></span>
           </label>
+          <span id="selected-counter" class="text-xs text-slate-500 ml-3"></span>
         </div>
-        <div class="flex items-center gap-2">
-          <%= button_to t("transactions.preview.discard_all"),
-                discard_preview_transactions_path,
-                method: :delete,
-                form: { data: { turbo_confirm: t("transactions.preview.discard_all") + "?" } },
-                class: "inline-flex items-center gap-1 text-xs text-rose-300 hover:text-rose-200 bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/30 px-3 py-2 rounded-lg cursor-pointer transition" %>
-          <button type="submit"
-                  class="inline-flex items-center gap-2 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-semibold px-4 py-2 rounded-lg cursor-pointer transition">
-            <%= heroicon :check_circle, klass: "w-4 h-4" %>
-            <%= t("transactions.preview.confirm_import") %>
-          </button>
-        </div>
+        <button type="submit"
+                class="inline-flex items-center gap-2 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-semibold px-4 py-2 rounded-lg cursor-pointer transition">
+          <%= heroicon :check_circle, klass: "w-4 h-4" %>
+          <%= t("transactions.preview.confirm_import") %>
+        </button>
       </div>
 
       <table class="w-full text-sm">
@@ -53,6 +52,7 @@
             <tr class="hover:bg-slate-800/40 transition">
               <td class="px-4 py-3">
                 <input type="checkbox" name="keep_ids[]" value="<%= tx.id %>" checked
+                       data-date="<%= tx.date.iso8601 %>"
                        class="preview-keep w-4 h-4 rounded border-slate-700 bg-slate-950 text-violet-500 focus:ring-violet-500/50" />
               </td>
               <td class="px-4 py-3 text-slate-300 whitespace-nowrap"><%= tx.date.strftime("%d/%m/%Y") %></td>
@@ -78,9 +78,21 @@
 
 <script type="module">
   const toggleAll = document.getElementById("toggle-all");
+  const counter = document.getElementById("selected-counter");
+  const checkboxes = Array.from(document.querySelectorAll(".preview-keep"));
+
+  function refreshCounter() {
+    if (!counter) return;
+    const selected = checkboxes.filter((cb) => cb.checked).length;
+    counter.textContent = selected + " de " + checkboxes.length + " seleccionados";
+  }
+
   if (toggleAll) {
     toggleAll.addEventListener("change", (e) => {
-      document.querySelectorAll(".preview-keep").forEach((cb) => { cb.checked = e.target.checked; });
+      checkboxes.forEach((cb) => { cb.checked = e.target.checked; });
+      refreshCounter();
     });
   }
+  checkboxes.forEach((cb) => cb.addEventListener("change", refreshCounter));
+  refreshCounter();
 </script>
