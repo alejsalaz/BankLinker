@@ -1,0 +1,31 @@
+<%= form_with model: pocket, local: true, class: "space-y-4" do |f| %>
+  <% if pocket.errors.any? %>
+    <div class="bg-rose-100 border border-rose-300 text-rose-800 rounded-lg px-4 py-2 text-sm">
+      <%= pocket.errors.full_messages.to_sentence %>
+    </div>
+  <% end %>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div>
+      <%= f.label :name, "Nombre", class: "block text-sm font-medium text-slate-700 mb-1" %>
+      <%= f.text_field :name, required: true, placeholder: "Ej: Hogar, Inversiones, Transporte", class: "block w-full rounded-lg border-slate-300 focus:border-indigo-500 focus:ring-indigo-500" %>
+    </div>
+
+    <div>
+      <%= f.label :color, "Color", class: "block text-sm font-medium text-slate-700 mb-1" %>
+      <%= f.select :color, Pocket::AVAILABLE_COLORS.map { |c| [c.titleize, c] }, {}, class: "block w-full rounded-lg border-slate-300 focus:border-indigo-500 focus:ring-indigo-500" %>
+    </div>
+  </div>
+
+  <% if pocket.persisted? %>
+    <div>
+      <%= f.label :position, "Posición", class: "block text-sm font-medium text-slate-700 mb-1" %>
+      <%= f.number_field :position, class: "block w-32 rounded-lg border-slate-300 focus:border-indigo-500 focus:ring-indigo-500" %>
+    </div>
+  <% end %>
+
+  <div class="flex items-center gap-3">
+    <%= f.submit (pocket.persisted? ? "Guardar cambios" : "Crear pocket"), class: "bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-5 py-2.5 rounded-lg cursor-pointer" %>
+    <%= link_to "Cancelar", pockets_path, class: "text-slate-600 hover:text-slate-900" %>
+  </div>
+<% end %>

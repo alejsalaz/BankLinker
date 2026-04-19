@@ -1,0 +1,48 @@
+<% content_for :title, "Pockets - BankLinker" %>
+
+<section class="space-y-8">
+  <div>
+    <h1 class="text-3xl font-bold">Pockets</h1>
+    <p class="text-slate-600 mt-1">Configura las categorías en las que agrupas tus gastos. Los botones de la pantalla de categorización se arman desde esta lista.</p>
+  </div>
+
+  <div class="bg-white rounded-xl border border-slate-200 p-6">
+    <h2 class="text-xl font-semibold mb-4">Crear nuevo pocket</h2>
+    <%= render "form", pocket: @pocket %>
+  </div>
+
+  <div class="bg-white rounded-xl border border-slate-200 overflow-hidden">
+    <table class="w-full text-sm">
+      <thead class="bg-slate-50 text-slate-700 uppercase text-xs">
+        <tr>
+          <th class="px-4 py-3 text-left">#</th>
+          <th class="px-4 py-3 text-left">Nombre</th>
+          <th class="px-4 py-3 text-left">Color</th>
+          <th class="px-4 py-3 text-left">Transacciones</th>
+          <th class="px-4 py-3 text-right">Acciones</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-slate-100">
+        <% @pockets.each do |pocket| %>
+          <tr>
+            <td class="px-4 py-3 text-slate-500"><%= pocket.position %></td>
+            <td class="px-4 py-3 font-medium text-slate-900"><%= pocket.name %></td>
+            <td class="px-4 py-3">
+              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border <%= pocket.badge_classes %>">
+                <%= pocket.color %>
+              </span>
+            </td>
+            <td class="px-4 py-3 text-slate-600"><%= pocket.transactions.count %></td>
+            <td class="px-4 py-3 text-right space-x-3">
+              <%= link_to "Editar", edit_pocket_path(pocket), class: "text-indigo-600 hover:text-indigo-800" %>
+              <%= button_to "Eliminar", pocket_path(pocket), method: :delete, form: { data: { turbo_confirm: "¿Eliminar '#{pocket.name}'?" } }, class: "text-rose-600 hover:text-rose-800 cursor-pointer bg-transparent p-0" %>
+            </td>
+          </tr>
+        <% end %>
+        <% if @pockets.empty? %>
+          <tr><td colspan="5" class="px-4 py-6 text-center text-slate-500">Aún no tienes pockets. Crea uno arriba.</td></tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</section>
