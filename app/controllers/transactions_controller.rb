@@ -34,6 +34,37 @@ class TransactionsController < ApplicationController
     redirect_to transactions_path, notice: "Cola limpiada: #{removed} transacciones eliminadas."
   end
 
+  def preview
+    @staging_transactions = Transaction.staging.order(:date, :id)
+
+    if @staging_transactions.empty?
+      redirect_to root_path, alert: "No hay movimientos en preview. Sube un extracto primero."
+      return
+    end
+
+    @date_from = @staging_transactions.minimum(:date)
+    @date_to = @staging_transactions.maximum(:date)
+  end
+
+  def confirm_preview
+    keep_ids = Array(params[:keep_ids]).map(&:to_i)
+    staging = Transaction.staging
+
+    discarded = staging.where.not(id: keep_ids).delete_all
+    kept = staging.where(id: keep_ids).update_all(status: Transaction.statuses[:pending], updated_at: Time.current)
+
+    if kept.zero?
+      redirect_to root_path, alert: "Descartaste todos los movimientos. No se importó nada."
+    else
+      redirect_to transactions_path, notice: "Importadas #{kept} transacciones. #{discarded} descartadas."
+    end
+  end
+
+  def discard_preview
+    removed = Transaction.staging.delete_all
+    redirect_to root_path, notice: "Preview descartado (#{removed} movimientos)."
+  end
+
   def export
     csv_data = build_csv
     filename = "banklinker_ivy_#{Date.current.strftime('%Y%m%d')}.csv"

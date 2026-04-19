@@ -37,14 +37,16 @@ module Extractors
       return nil unless match
 
       date = parse_spanish_date(match[:day], match[:month], match[:year])
-      amount = normalize_anglo_amount(match[:amount])
+      raw_amount = normalize_anglo_amount(match[:amount])
       description = match[:description].strip
-      return nil if date.nil? || amount.nil? || description.empty?
+      return nil if date.nil? || raw_amount.nil? || description.empty?
 
       {
         date: date,
         description: description,
-        amount: amount
+        amount: raw_amount.abs,
+        transaction_type: raw_amount.negative? ? :expense : :income,
+        currency: "COP"
       }
     end
 

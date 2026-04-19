@@ -27,8 +27,8 @@ class DashboardsController < ApplicationController
         return
       end
 
-      persist_rows(rows)
-      redirect_to transactions_path, notice: "Se importaron #{rows.size} transacciones."
+      stage_rows(rows)
+      redirect_to preview_transactions_path, notice: "Se detectaron #{rows.size} movimientos. Revísalos antes de confirmar."
     rescue => e
       Rails.logger.error("[BankLinker] Error procesando extracto: #{e.class} - #{e.message}")
       redirect_to root_path, alert: "No se pudo procesar el archivo: #{e.message}"
@@ -48,14 +48,21 @@ class DashboardsController < ApplicationController
     tempfile.path
   end
 
-  def persist_rows(rows)
+  # Guarda los movimientos detectados como "staging" para que el usuario los
+  # revise antes de confirmarlos. Al confirmar, pasan a :pending; los
+  # descartados se eliminan.
+  def stage_rows(rows)
+    Transaction.staging.delete_all
+
     now = Time.current
     records = rows.map do |row|
       {
         date: row[:date],
         description: row[:description],
         amount: row[:amount],
-        status: Transaction.statuses[:pending],
+        transaction_type: Transaction.transaction_types[row[:transaction_type] || :expense],
+        currency: row[:currency] || "COP",
+        status: Transaction.statuses[:staging],
         created_at: now,
         updated_at: now
       }

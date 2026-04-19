@@ -47,7 +47,9 @@ module Extractors
       {
         date: date,
         description: description,
-        amount: amount
+        amount: amount.abs,
+        transaction_type: :expense,
+        currency: "COP"
       }
     end
 
