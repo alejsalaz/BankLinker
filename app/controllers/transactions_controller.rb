@@ -32,9 +32,9 @@ class TransactionsController < ApplicationController
     end
   end
 
-  def clear_pending
-    removed = Transaction.pending.delete_all
-    redirect_to transactions_path, notice: "Cola limpiada: #{removed} transacciones eliminadas."
+  def reset
+    removed = Transaction.delete_all
+    redirect_to root_path, notice: "Historial reiniciado. Se eliminaron #{removed} transacciones."
   end
 
   def preview

@@ -12,13 +12,13 @@
         <span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
         <%= t("transactions.categorize.remaining", count: @remaining) %>
       </span>
-      <% if @remaining.positive? %>
-        <%= button_to clear_pending_transactions_path,
+      <% if Transaction.exists? %>
+        <%= button_to reset_transactions_path,
               method: :delete,
-              form: { data: { turbo_confirm: t("transactions.categorize.queue.confirm_clear") } },
+              form: { data: { turbo_confirm: t("transactions.categorize.queue.confirm_reset") } },
               class: "inline-flex items-center gap-2 text-xs text-rose-300 hover:text-rose-200 bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/30 px-3 py-1.5 rounded-lg cursor-pointer transition" do %>
           <%= heroicon :trash, klass: "w-4 h-4" %>
-          <%= t("transactions.categorize.queue.clear") %>
+          <%= t("transactions.categorize.queue.reset") %>
         <% end %>
       <% end %>
     </div>

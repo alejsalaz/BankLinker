@@ -112,8 +112,8 @@ es:
         transfer: Transferencia
       queue:
         title: Cola pendiente
-        clear: Limpiar cola
-        confirm_clear: ¿Seguro que quieres limpiar toda la cola?
+        reset: Empezar de cero
+        confirm_reset: Esto borrará todos los movimientos (pendientes, en revisión y ya categorizados). ¿Continuar?
       all_clear:
         title: Todo al día
         body: No hay movimientos pendientes. Sube otro extracto o exporta lo categorizado.

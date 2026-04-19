@@ -14,7 +14,7 @@ Rails.application.routes.draw do
 
     collection do
       get :export
-      delete :clear_pending
+      delete :reset
       get :preview
       post :confirm_preview
       delete :discard_preview

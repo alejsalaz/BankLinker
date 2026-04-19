@@ -47,14 +47,25 @@
 
   <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
     <div class="lg:col-span-2 bg-slate-900 rounded-2xl border border-slate-800 p-6">
-      <div class="flex items-start justify-between mb-6">
+      <div class="flex items-start justify-between mb-6 gap-4">
         <div>
           <h2 class="text-lg font-semibold text-slate-100">Subir extracto</h2>
           <p class="text-sm text-slate-400 mt-1">Aceptamos PDF y imágenes. Los PDFs protegidos necesitan contraseña.</p>
         </div>
-        <span class="w-10 h-10 rounded-lg bg-violet-500/10 border border-violet-500/30 flex items-center justify-center text-violet-300">
-          <%= heroicon :document_arrow_up, klass: "w-5 h-5" %>
-        </span>
+        <div class="flex items-center gap-2">
+          <% if @pending_count.positive? || @processed_count.positive? %>
+            <%= button_to reset_transactions_path,
+                  method: :delete,
+                  form: { data: { turbo_confirm: t("transactions.categorize.queue.confirm_reset") } },
+                  class: "inline-flex items-center gap-1 text-xs text-rose-300 hover:text-rose-200 bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/30 px-2.5 py-1.5 rounded-lg cursor-pointer transition" do %>
+              <%= heroicon :trash, klass: "w-3.5 h-3.5" %>
+              <%= t("transactions.categorize.queue.reset") %>
+            <% end %>
+          <% end %>
+          <span class="w-10 h-10 rounded-lg bg-violet-500/10 border border-violet-500/30 flex items-center justify-center text-violet-300">
+            <%= heroicon :document_arrow_up, klass: "w-5 h-5" %>
+          </span>
+        </div>
       </div>
 
       <%= form_with url: upload_dashboard_path, method: :post, multipart: true, local: true, class: "space-y-5" do |f| %>
