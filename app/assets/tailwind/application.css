@@ -1,0 +1,16 @@
+@import "tailwindcss";
+
+@source "../../views";
+@source "../../helpers";
+@source "../../javascript";
+@source "../../controllers";
+
+/*
+ * Safelist for dynamic pocket colors:
+ * Since pocket colors are persisted in the DB, the scanner can't see them
+ * statically. We list them here so Tailwind compiles every variant.
+ */
+@source inline("{bg,hover:bg}-{slate,gray,zinc,red,orange,amber,yellow,lime,green,emerald,teal,cyan,sky,blue,indigo,violet,purple,fuchsia,pink,rose}-{600,700,500}");
+@source inline("bg-{slate,gray,zinc,red,orange,amber,yellow,lime,green,emerald,teal,cyan,sky,blue,indigo,violet,purple,fuchsia,pink,rose}-{100,200}");
+@source inline("text-{slate,gray,zinc,red,orange,amber,yellow,lime,green,emerald,teal,cyan,sky,blue,indigo,violet,purple,fuchsia,pink,rose}-{700,800}");
+@source inline("border-{slate,gray,zinc,red,orange,amber,yellow,lime,green,emerald,teal,cyan,sky,blue,indigo,violet,purple,fuchsia,pink,rose}-{200,300}");
