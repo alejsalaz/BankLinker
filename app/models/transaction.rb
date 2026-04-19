@@ -3,7 +3,7 @@ class Transaction < ApplicationRecord
   enum :transaction_type, { expense: 0, income: 1, transfer: 2 }, default: :expense
 
   belongs_to :envelope, optional: true
-  belongs_to :ivy_category, optional: true
+  belongs_to :category, optional: true
 
   validates :date, :amount, :description, presence: true
   validates :envelope, presence: true, if: :processed?
@@ -13,8 +13,8 @@ class Transaction < ApplicationRecord
     pending.order(:date, :id).first
   end
 
-  # En Ivy Wallet todos los montos se exportan positivos.
-  # El tipo (expense/income/transfer) ya indica el sentido del movimiento.
+  # Siempre exportamos montos positivos al CSV; el tipo
+  # (expense/income/transfer) ya indica el sentido del movimiento.
   def csv_amount
     amount.abs
   end

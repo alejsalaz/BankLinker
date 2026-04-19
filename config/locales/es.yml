@@ -54,13 +54,13 @@ es:
     home: Inicio
     categorize: Categorizar
     envelopes: Sobres
-    ivy_categories: Categorías Ivy
+    categories: Categorías
     export_csv: Exportar CSV
     upload_statement: Subir extracto
 
   dashboard:
     title: Panel de control
-    subtitle: Sube un extracto, categoriza tus movimientos y expórtalos a Ivy Wallet.
+    subtitle: Sube un extracto, categoriza tus movimientos y expórtalos como CSV.
     metrics:
       pending: Pendientes por categorizar
       processed: Procesadas
@@ -70,7 +70,7 @@ es:
       download_csv: Descargar CSV
     csv_format:
       title: Formato del CSV exportado
-      body_html: Las fechas salen en <span class="font-mono">dd/MM/yyyy</span>. Al importar en Ivy Wallet selecciona ese formato en el wizard para evitar confusiones día/mes.
+      body_html: Las fechas salen en <span class="font-mono">dd/MM/yyyy</span>. Selecciona ese formato en el wizard de importación de tu app para evitar confusiones día/mes.
 
   envelopes:
     title: Sobres
@@ -80,14 +80,17 @@ es:
     color: Color
     movements: Movimientos
     actions:
+      title: Acciones
       edit: Editar
       delete: Eliminar
     empty: Aún no tienes sobres. Crea uno arriba.
 
-  ivy_categories:
-    title: Categorías Ivy
-    subtitle: Lista de categorías que exportarás a Ivy Wallet. Son opcionales por transacción.
+  categories:
+    title: Categorías
+    subtitle: Etiquetas opcionales que se exportan en la columna "Categoría" del CSV.
     create: Crear nueva categoría
+    create_hint: Usa el mismo nombre que maneja tu app de destino para que el import las reconozca.
+    your_list: Tus categorías
     empty: Aún no tienes categorías.
 
   transactions:
@@ -100,7 +103,7 @@ es:
       details_optional: Detalles (opcional)
       csv_title: Título (para CSV)
       description: Descripción
-      ivy_category: Categoría Ivy
+      category: Categoría
       no_category: — Sin categoría —
       amount: Monto
       type:

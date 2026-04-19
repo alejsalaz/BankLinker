@@ -14,8 +14,8 @@ default_envelopes.each_with_index do |attrs, index|
   end
 end
 
-# Categorías sugeridas de Ivy Wallet. Son opcionales y el usuario puede editarlas.
-default_ivy_categories = [
+# Categorías sugeridas para el CSV. Son opcionales y el usuario puede editarlas.
+default_categories = [
   "Alimentación",
   "Transporte",
   "Vivienda",
@@ -28,8 +28,8 @@ default_ivy_categories = [
   "Otros"
 ]
 
-default_ivy_categories.each_with_index do |name, index|
-  IvyCategory.find_or_create_by!(name: name) do |c|
+default_categories.each_with_index do |name, index|
+  Category.find_or_create_by!(name: name) do |c|
     c.position = index
   end
 end

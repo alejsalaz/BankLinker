@@ -81,16 +81,16 @@ class TransactionsController < ApplicationController
   end
 
   def categorize_params
-    permitted = params.permit(:title, :description, :ivy_category_id)
+    permitted = params.permit(:title, :description, :category_id)
     permitted[:title] = permitted[:title].presence
-    permitted[:ivy_category_id] = permitted[:ivy_category_id].presence
+    permitted[:category_id] = permitted[:category_id].presence
     permitted
   end
 
-  # Formato pensado para el import de Ivy Wallet. Usa las columnas en español
-  # que Alejo indicó. La fecha va en dd/MM/yyyy; al importar en Ivy hay que
-  # elegir ese formato en el wizard.
-  IVY_TYPE_LABELS = {
+  # CSV orientado a apps de presupuesto: columnas en español y fecha en
+  # dd/MM/yyyy. El mismo formato hay que elegirlo en el wizard de importación
+  # de la app destino.
+  CSV_TYPE_LABELS = {
     "expense" => "Expense",
     "income" => "Income",
     "transfer" => "Transfer"
@@ -112,14 +112,14 @@ class TransactionsController < ApplicationController
         "Cantidad de cambio"
       ]
 
-      Transaction.processed.includes(:envelope, :ivy_category).order(:date, :id).find_each do |t|
+      Transaction.processed.includes(:envelope, :category).order(:date, :id).find_each do |t|
         csv << [
           t.date.strftime("%d/%m/%Y"),
-          IVY_TYPE_LABELS[t.transaction_type],
+          CSV_TYPE_LABELS[t.transaction_type],
           t.csv_amount.to_s("F"),
           t.currency,
           t.envelope&.name,
-          t.ivy_category&.name,
+          t.category&.name,
           t.csv_title,
           t.description,
           t.receiver,
