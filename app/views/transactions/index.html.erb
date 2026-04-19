@@ -1,0 +1,17 @@
+<% content_for :title, "Categorizar - BankLinker" %>
+
+<section class="space-y-6">
+  <div class="flex items-center justify-between">
+    <div>
+      <h1 class="text-3xl font-bold">Categorizar</h1>
+      <p class="text-slate-600 mt-1">Asigna cada transacción a un pocket con un click.</p>
+    </div>
+    <span id="remaining_counter" class="text-sm text-slate-500">
+      <%= pluralize(@remaining, "pendiente") %>
+    </span>
+  </div>
+
+  <%= turbo_frame_tag "current_card" do %>
+    <%= render "card", transaction: @transaction, pockets: @pockets %>
+  <% end %>
+</section>

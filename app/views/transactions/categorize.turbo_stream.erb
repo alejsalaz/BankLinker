@@ -1,0 +1,11 @@
+<%= turbo_stream.replace "current_card" do %>
+  <%= turbo_frame_tag "current_card" do %>
+    <%= render "card", transaction: @next_transaction, pockets: @pockets %>
+  <% end %>
+<% end %>
+
+<%= turbo_stream.replace "remaining_counter" do %>
+  <span id="remaining_counter" class="text-sm text-slate-500">
+    <%= pluralize(@remaining, "pendiente") %>
+  </span>
+<% end %>

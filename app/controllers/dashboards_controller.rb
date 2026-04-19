@@ -2,6 +2,7 @@ class DashboardsController < ApplicationController
   def show
     @pending_count = Transaction.pending.count
     @processed_count = Transaction.processed.count
+    @pockets_count = Pocket.count
     @extractor_types = Extractors::Dispatcher.available_types
   end
 
@@ -26,7 +27,7 @@ class DashboardsController < ApplicationController
       end
 
       persist_rows(rows)
-      redirect_to root_path, notice: "Se importaron #{rows.size} transacciones."
+      redirect_to transactions_path, notice: "Se importaron #{rows.size} transacciones."
     rescue => e
       Rails.logger.error("[BankLinker] Error procesando extracto: #{e.class} - #{e.message}")
       redirect_to root_path, alert: "No se pudo procesar el archivo: #{e.message}"

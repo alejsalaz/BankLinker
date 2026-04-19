@@ -6,14 +6,22 @@
     <p class="text-slate-600 mt-1">Sube un PDF o imagen del extracto para convertirlo en transacciones pendientes de categorizar.</p>
   </div>
 
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
     <div class="bg-white rounded-xl border border-slate-200 p-5">
       <p class="text-sm text-slate-500">Pendientes por categorizar</p>
       <p class="text-4xl font-bold text-slate-900 mt-1"><%= @pending_count %></p>
+      <% if @pending_count.positive? %>
+        <%= link_to "Categorizar ahora", transactions_path, class: "inline-block mt-3 text-indigo-600 hover:text-indigo-800 font-medium" %>
+      <% end %>
     </div>
     <div class="bg-white rounded-xl border border-slate-200 p-5">
       <p class="text-sm text-slate-500">Procesadas</p>
       <p class="text-4xl font-bold text-emerald-600 mt-1"><%= @processed_count %></p>
+    </div>
+    <div class="bg-white rounded-xl border border-slate-200 p-5">
+      <p class="text-sm text-slate-500">Pockets configurados</p>
+      <p class="text-4xl font-bold text-indigo-600 mt-1"><%= @pockets_count %></p>
+      <%= link_to "Administrar pockets", pockets_path, class: "inline-block mt-3 text-indigo-600 hover:text-indigo-800 font-medium" %>
     </div>
   </div>
 
