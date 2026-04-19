@@ -1,0 +1,47 @@
+<% content_for :title, "Dashboard - BankLinker" %>
+
+<section class="space-y-8">
+  <div>
+    <h1 class="text-3xl font-bold">Importar extracto</h1>
+    <p class="text-slate-600 mt-1">Sube un PDF o imagen del extracto para convertirlo en transacciones pendientes de categorizar.</p>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div class="bg-white rounded-xl border border-slate-200 p-5">
+      <p class="text-sm text-slate-500">Pendientes por categorizar</p>
+      <p class="text-4xl font-bold text-slate-900 mt-1"><%= @pending_count %></p>
+    </div>
+    <div class="bg-white rounded-xl border border-slate-200 p-5">
+      <p class="text-sm text-slate-500">Procesadas</p>
+      <p class="text-4xl font-bold text-emerald-600 mt-1"><%= @processed_count %></p>
+    </div>
+  </div>
+
+  <div class="bg-white rounded-xl border border-slate-200 p-6">
+    <h2 class="text-xl font-semibold mb-4">Subir extracto</h2>
+    <%= form_with url: upload_dashboard_path, method: :post, multipart: true, local: true, class: "space-y-4" do |f| %>
+      <div>
+        <%= f.label :extractor_type, "Tipo de extracto", class: "block text-sm font-medium text-slate-700 mb-1" %>
+        <%= f.select :extractor_type, @extractor_types.map { |t| [t.to_s.titleize, t] }, {}, class: "block w-full rounded-lg border-slate-300 focus:border-indigo-500 focus:ring-indigo-500" %>
+      </div>
+
+      <div>
+        <%= f.label :file, "Archivo (PDF o imagen)", class: "block text-sm font-medium text-slate-700 mb-1" %>
+        <%= f.file_field :file, accept: ".pdf,image/*", required: true, class: "block w-full text-sm text-slate-700 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-indigo-600 file:text-white hover:file:bg-indigo-700" %>
+      </div>
+
+      <div>
+        <%= f.label :password, "Contraseña del PDF (opcional)", class: "block text-sm font-medium text-slate-700 mb-1" %>
+        <%= f.password_field :password, autocomplete: "off", placeholder: "Déjalo vacío si el PDF no tiene contraseña", class: "block w-full rounded-lg border-slate-300 focus:border-indigo-500 focus:ring-indigo-500" %>
+        <p class="text-xs text-slate-500 mt-1">Los extractos de Rappi, Nequi y bancos suelen venir cifrados.</p>
+      </div>
+
+      <div>
+        <%= f.submit "Procesar extracto", class: "bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-5 py-2.5 rounded-lg cursor-pointer" %>
+      </div>
+    <% end %>
+    <p class="text-xs text-slate-500 mt-4">
+      Tip: para OCR necesitas <code class="bg-slate-100 px-1 py-0.5 rounded">tesseract-ocr</code> instalado en el sistema.
+    </p>
+  </div>
+</section>
