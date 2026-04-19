@@ -124,10 +124,16 @@ es:
 
     preview:
       title: Revisa los movimientos
-      subtitle_html: "Se detectaron <span class=\"text-slate-200 font-semibold\">%{count}</span> movimientos entre <span class=\"text-slate-200 font-semibold\">%{from}</span> y <span class=\"text-slate-200 font-semibold\">%{to}</span>. Desmarca los que no quieras importar y confirma."
+      subtitle_html: "Se detectaron <span class=\"text-slate-200 font-semibold\">%{count}</span> movimientos entre <span class=\"text-slate-200 font-semibold\">%{from}</span> y <span class=\"text-slate-200 font-semibold\">%{to}</span>. Ajusta el rango o desmarca los que no quieras importar y confirma."
       toggle_all: Marcar / desmarcar todo
       discard_all: Descartar todo
       confirm_import: Confirmar importación
+      range:
+        title: Filtrar por rango de fechas
+        hint: Define el rango que quieres importar y aplica. Los movimientos fuera del rango se desmarcarán.
+        from: Desde
+        to: Hasta
+        apply: Aplicar rango
       headers:
         date: Fecha
         description: Descripción
