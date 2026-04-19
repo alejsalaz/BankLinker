@@ -36,32 +36,77 @@
       <div class="space-y-1">
         <span class="inline-flex items-center gap-2 px-2.5 py-1 rounded-full text-xs font-medium bg-slate-800 text-slate-300 border border-slate-700">
           <%= heroicon :clock, klass: "w-3.5 h-3.5" %>
-          <%= l(transaction.date, format: :long) rescue transaction.date.to_s %>
+          <%= transaction.date.strftime("%d/%m/%Y") %>
         </span>
         <p class="text-sm text-slate-400 pt-3">Descripción</p>
         <p class="text-2xl font-semibold text-slate-100 break-words"><%= transaction.description %></p>
       </div>
       <div class="text-right shrink-0">
         <p class="text-xs uppercase tracking-wide text-slate-500">Monto</p>
-        <p class="text-3xl md:text-4xl font-bold mt-1 <%= transaction.amount.negative? ? 'text-rose-400' : 'text-emerald-400' %>">
-          <%= number_to_currency(transaction.amount, unit: "$", separator: ",", delimiter: ".", precision: 2) %>
+        <p class="text-3xl md:text-4xl font-bold mt-1 <%= transaction.transaction_type == 'income' ? 'text-emerald-400' : 'text-rose-400' %>">
+          <%= number_to_currency(transaction.amount, unit: "$", separator: ",", delimiter: ".", precision: 0) %>
+        </p>
+        <p class="text-xs text-slate-500 mt-1 uppercase tracking-wide">
+          <%= { "expense" => "Gasto", "income" => "Ingreso", "transfer" => "Transferencia" }[transaction.transaction_type] %>
         </p>
       </div>
     </div>
 
-    <div class="mt-8">
-      <p class="text-xs uppercase tracking-wide text-slate-500 mb-3">Asignar a sobre</p>
-      <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
-        <% envelopes.each do |envelope| %>
-          <%= button_to categorize_transaction_path(transaction, envelope_id: envelope.id),
-                method: :patch,
-                form: { data: { turbo_stream: true }, class: "block w-full" },
-                class: "#{envelope.button_classes} w-full rounded-xl py-4 px-4 font-semibold text-base transition transform hover:scale-[1.02] active:scale-[0.98] cursor-pointer flex items-center gap-3 text-left" do %>
-            <span class="w-2.5 h-2.5 rounded-full shrink-0 <%= envelope.dot_classes %>"></span>
-            <span class="flex-1 truncate"><%= envelope.name %></span>
+    <%= form_with url: categorize_transaction_path(transaction),
+                  method: :patch,
+                  data: { turbo_stream: true },
+                  class: "mt-6" do |f| %>
+
+      <details class="group border border-slate-800 rounded-xl overflow-hidden bg-slate-950/40">
+        <summary class="flex items-center justify-between cursor-pointer px-4 py-3 text-sm text-slate-300 hover:bg-slate-800/40 transition">
+          <span class="inline-flex items-center gap-2">
+            <%= heroicon :pencil, klass: "w-4 h-4 text-slate-400" %>
+            Detalles (opcional)
+          </span>
+          <span class="text-slate-500 group-open:rotate-180 transition">
+            <%= heroicon :chevron_down, klass: "w-4 h-4" %>
+          </span>
+        </summary>
+        <div class="p-4 space-y-4 border-t border-slate-800">
+          <div>
+            <label class="block text-xs uppercase tracking-wide text-slate-500 mb-1.5">Título (para CSV)</label>
+            <%= f.text_field :title,
+                  value: transaction.title,
+                  placeholder: transaction.description,
+                  class: "w-full rounded-lg bg-slate-950 border border-slate-800 focus:border-violet-500/60 focus:ring-2 focus:ring-violet-500/30 px-3 py-2 text-sm text-slate-100 placeholder-slate-500 outline-none" %>
+          </div>
+
+          <div>
+            <label class="block text-xs uppercase tracking-wide text-slate-500 mb-1.5">Descripción</label>
+            <%= f.text_area :description,
+                  value: transaction.description,
+                  rows: 2,
+                  class: "w-full rounded-lg bg-slate-950 border border-slate-800 focus:border-violet-500/60 focus:ring-2 focus:ring-violet-500/30 px-3 py-2 text-sm text-slate-100 outline-none" %>
+          </div>
+
+          <div>
+            <label class="block text-xs uppercase tracking-wide text-slate-500 mb-1.5">Categoría Ivy</label>
+            <%= f.collection_select :ivy_category_id,
+                  IvyCategory.ordered,
+                  :id, :name,
+                  { include_blank: "— Sin categoría —", selected: transaction.ivy_category_id },
+                  class: "w-full rounded-lg bg-slate-950 border border-slate-800 focus:border-violet-500/60 focus:ring-2 focus:ring-violet-500/30 px-3 py-2 text-sm text-slate-100 outline-none" %>
+          </div>
+        </div>
+      </details>
+
+      <div class="mt-6">
+        <p class="text-xs uppercase tracking-wide text-slate-500 mb-3">Asignar a sobre</p>
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
+          <% envelopes.each do |envelope| %>
+            <button type="submit" name="envelope_id" value="<%= envelope.id %>"
+                    class="<%= envelope.button_classes %> w-full rounded-xl py-4 px-4 font-semibold text-base transition transform hover:scale-[1.02] active:scale-[0.98] cursor-pointer flex items-center gap-3 text-left">
+              <span class="w-2.5 h-2.5 rounded-full shrink-0 <%= envelope.dot_classes %>"></span>
+              <span class="flex-1 truncate"><%= envelope.name %></span>
+            </button>
           <% end %>
-        <% end %>
+        </div>
       </div>
-    </div>
+    <% end %>
   </div>
 <% end %>

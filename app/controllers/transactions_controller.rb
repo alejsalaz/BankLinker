@@ -18,7 +18,10 @@ class TransactionsController < ApplicationController
       return
     end
 
-    @categorized_transaction.update!(envelope: envelope, status: :processed)
+    @categorized_transaction.assign_attributes(categorize_params)
+    @categorized_transaction.envelope = envelope
+    @categorized_transaction.status = :processed
+    @categorized_transaction.save!
 
     @next_transaction = Transaction.next_pending
     @remaining = Transaction.pending.count
@@ -75,6 +78,13 @@ class TransactionsController < ApplicationController
 
   def load_envelopes
     @envelopes = Envelope.ordered
+  end
+
+  def categorize_params
+    permitted = params.permit(:title, :description, :ivy_category_id)
+    permitted[:title] = permitted[:title].presence
+    permitted[:ivy_category_id] = permitted[:ivy_category_id].presence
+    permitted
   end
 
   def build_csv
