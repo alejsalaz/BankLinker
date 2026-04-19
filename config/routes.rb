@@ -18,5 +18,5 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :pockets, except: [:show]
+  resources :envelopes, except: [:show]
 end

@@ -27,7 +27,7 @@
   <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
     <div class="lg:col-span-2">
       <%= turbo_frame_tag "current_card" do %>
-        <%= render "card", transaction: @transaction, pockets: @pockets %>
+        <%= render "card", transaction: @transaction, envelopes: @envelopes %>
       <% end %>
     </div>
 

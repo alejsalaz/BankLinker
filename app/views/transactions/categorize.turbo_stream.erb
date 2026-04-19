@@ -1,6 +1,6 @@
 <%= turbo_stream.replace "current_card" do %>
   <%= turbo_frame_tag "current_card" do %>
-    <%= render "card", transaction: @next_transaction, pockets: @pockets %>
+    <%= render "card", transaction: @next_transaction, envelopes: @envelopes %>
   <% end %>
 <% end %>
 

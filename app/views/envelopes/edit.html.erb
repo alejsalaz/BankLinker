@@ -1,0 +1,13 @@
+<% content_for :title, "Editar #{@envelope.name} - BankLinker" %>
+<% content_for :breadcrumb, "Sobres / Editar" %>
+
+<section class="space-y-6 max-w-2xl">
+  <div>
+    <h1 class="text-3xl font-bold text-slate-100">Editar sobre</h1>
+    <p class="text-slate-400 mt-1">Ajusta el nombre, el color o la posición.</p>
+  </div>
+
+  <div class="bg-slate-900 rounded-2xl border border-slate-800 p-6">
+    <%= render "form", envelope: @envelope %>
+  </div>
+</section>

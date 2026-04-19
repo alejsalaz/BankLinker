@@ -11,9 +11,9 @@
 
   <nav class="flex-1 px-3 py-6 space-y-1">
     <% nav_items = [
-      { label: "Dashboard", path: root_path, icon: :home, active: current_page?(root_path) },
+      { label: "Inicio", path: root_path, icon: :home, active: current_page?(root_path) },
       { label: "Categorizar", path: transactions_path, icon: :rectangle_stack, active: current_page?(transactions_path) },
-      { label: "Pockets", path: pockets_path, icon: :tag, active: request.path.start_with?("/pockets") },
+      { label: "Sobres", path: envelopes_path, icon: :tag, active: request.path.start_with?("/envelopes") },
       { label: "Exportar CSV", path: export_transactions_path, icon: :arrow_down_tray, active: false }
     ] %>
 

@@ -1,7 +1,7 @@
 class TransactionsController < ApplicationController
   require "csv"
 
-  before_action :load_pockets, only: [:index, :categorize]
+  before_action :load_envelopes, only: [:index, :categorize]
 
   def index
     @transaction = Transaction.next_pending
@@ -11,14 +11,14 @@ class TransactionsController < ApplicationController
 
   def categorize
     @categorized_transaction = Transaction.find(params[:id])
-    pocket = Pocket.find_by(id: params[:pocket_id])
+    envelope = Envelope.find_by(id: params[:envelope_id])
 
-    if pocket.nil?
-      redirect_to transactions_path, alert: "Pocket inválido."
+    if envelope.nil?
+      redirect_to transactions_path, alert: "Sobre inválido."
       return
     end
 
-    @categorized_transaction.update!(pocket: pocket, status: :processed)
+    @categorized_transaction.update!(envelope: envelope, status: :processed)
 
     @next_transaction = Transaction.next_pending
     @remaining = Transaction.pending.count
@@ -42,19 +42,19 @@ class TransactionsController < ApplicationController
 
   private
 
-  def load_pockets
-    @pockets = Pocket.ordered
+  def load_envelopes
+    @envelopes = Envelope.ordered
   end
 
   def build_csv
     CSV.generate(headers: true) do |csv|
       csv << %w[date amount title account_name currency_code type]
-      Transaction.processed.includes(:pocket).order(:date, :id).find_each do |t|
+      Transaction.processed.includes(:envelope).order(:date, :id).find_each do |t|
         csv << [
           t.date.iso8601,
           t.amount.to_s,
           t.description,
-          t.pocket&.name,
+          t.envelope&.name,
           "COP",
           "EXPENSE"
         ]

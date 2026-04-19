@@ -1,4 +1,4 @@
-default_pockets = [
+default_envelopes = [
   { name: "Necesidades", color: "blue" },
   { name: "Comida",      color: "orange" },
   { name: "Compras",     color: "pink" },
@@ -7,9 +7,9 @@ default_pockets = [
   { name: "Ahorros",     color: "emerald" }
 ]
 
-default_pockets.each_with_index do |attrs, index|
-  Pocket.find_or_create_by!(name: attrs[:name]) do |p|
-    p.color = attrs[:color]
-    p.position = index
+default_envelopes.each_with_index do |attrs, index|
+  Envelope.find_or_create_by!(name: attrs[:name]) do |e|
+    e.color = attrs[:color]
+    e.position = index
   end
 end

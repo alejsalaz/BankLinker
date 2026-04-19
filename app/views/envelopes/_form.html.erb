@@ -1,7 +1,7 @@
-<%= form_with model: pocket, local: true, class: "space-y-5" do |f| %>
-  <% if pocket.errors.any? %>
+<%= form_with model: envelope, local: true, class: "space-y-5" do |f| %>
+  <% if envelope.errors.any? %>
     <div class="bg-rose-500/10 border border-rose-500/30 text-rose-300 rounded-lg px-4 py-3 text-sm">
-      <%= pocket.errors.full_messages.to_sentence %>
+      <%= envelope.errors.full_messages.to_sentence %>
     </div>
   <% end %>
 
@@ -15,7 +15,7 @@
     <div>
       <%= f.label :color, "Color", class: "block text-xs font-medium uppercase tracking-wide text-slate-400 mb-2" %>
       <div class="grid grid-cols-10 gap-2">
-        <% Pocket::AVAILABLE_COLORS.each do |color| %>
+        <% Envelope::AVAILABLE_COLORS.each do |color| %>
           <label class="relative cursor-pointer group" title="<%= color.titleize %>">
             <%= f.radio_button :color, color, class: "peer sr-only" %>
             <span class="block w-8 h-8 rounded-lg bg-<%= color %>-500 ring-2 ring-transparent peer-checked:ring-white peer-checked:ring-offset-2 peer-checked:ring-offset-slate-900 hover:scale-110 transition"></span>
@@ -25,7 +25,7 @@
     </div>
   </div>
 
-  <% if pocket.persisted? %>
+  <% if envelope.persisted? %>
     <div>
       <%= f.label :position, "Posición", class: "block text-xs font-medium uppercase tracking-wide text-slate-400 mb-2" %>
       <%= f.number_field :position,
@@ -34,8 +34,8 @@
   <% end %>
 
   <div class="flex items-center gap-3 pt-2">
-    <%= f.submit (pocket.persisted? ? "Guardar cambios" : "Crear pocket"),
+    <%= f.submit (envelope.persisted? ? "Guardar cambios" : "Crear sobre"),
           class: "inline-flex items-center gap-2 bg-violet-600 hover:bg-violet-500 text-white font-semibold px-5 py-2.5 rounded-lg cursor-pointer transition" %>
-    <%= link_to "Cancelar", pockets_path, class: "text-sm text-slate-400 hover:text-slate-200" %>
+    <%= link_to "Cancelar", envelopes_path, class: "text-sm text-slate-400 hover:text-slate-200" %>
   </div>
 <% end %>

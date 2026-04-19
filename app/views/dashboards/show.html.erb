@@ -1,5 +1,5 @@
-<% content_for :title, "Dashboard - BankLinker" %>
-<% content_for :breadcrumb, "Dashboard" %>
+<% content_for :title, "Inicio - BankLinker" %>
+<% content_for :breadcrumb, "Inicio" %>
 
 <section class="space-y-8 max-w-6xl">
   <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
@@ -28,11 +28,11 @@
 
     <%= render "metric_card",
           icon: :tag,
-          label: "Pockets configurados",
-          value: @pockets_count,
+          label: "Sobres configurados",
+          value: @envelopes_count,
           accent: "violet",
-          action_label: "Administrar pockets",
-          action_path: pockets_path %>
+          action_label: "Administrar sobres",
+          action_path: envelopes_path %>
   </div>
 
   <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
@@ -90,26 +90,26 @@
 
     <div class="bg-slate-900 rounded-2xl border border-slate-800 p-6">
       <div class="flex items-center justify-between mb-4">
-        <h2 class="text-lg font-semibold text-slate-100">Pockets</h2>
-        <%= link_to pockets_path, class: "text-xs text-violet-400 hover:text-violet-300 inline-flex items-center gap-1" do %>
+        <h2 class="text-lg font-semibold text-slate-100">Sobres</h2>
+        <%= link_to envelopes_path, class: "text-xs text-violet-400 hover:text-violet-300 inline-flex items-center gap-1" do %>
           Ver todos <%= heroicon :chevron_right, klass: "w-3.5 h-3.5" %>
         <% end %>
       </div>
 
-      <% if @pockets.any? %>
+      <% if @envelopes.any? %>
         <ul class="space-y-2">
-          <% @pockets.each do |pocket| %>
+          <% @envelopes.each do |envelope| %>
             <li class="flex items-center justify-between px-3 py-2.5 rounded-lg bg-slate-950/60 border border-slate-800">
               <div class="flex items-center gap-3">
-                <span class="w-2.5 h-2.5 rounded-full <%= pocket.dot_classes %>"></span>
-                <span class="text-sm text-slate-200"><%= pocket.name %></span>
+                <span class="w-2.5 h-2.5 rounded-full <%= envelope.dot_classes %>"></span>
+                <span class="text-sm text-slate-200"><%= envelope.name %></span>
               </div>
-              <span class="text-xs text-slate-500"><%= pocket.transactions.count %></span>
+              <span class="text-xs text-slate-500"><%= envelope.transactions.count %></span>
             </li>
           <% end %>
         </ul>
       <% else %>
-        <p class="text-sm text-slate-400">Aún no hay pockets. <%= link_to "Crea el primero", pockets_path, class: "text-violet-400 hover:text-violet-300" %>.</p>
+        <p class="text-sm text-slate-400">Aún no hay sobres. <%= link_to "Crea el primero", envelopes_path, class: "text-violet-400 hover:text-violet-300" %>.</p>
       <% end %>
     </div>
   </div>

@@ -1,4 +1,4 @@
-class Pocket < ApplicationRecord
+class Envelope < ApplicationRecord
   AVAILABLE_COLORS = %w[
     slate gray zinc red orange amber yellow lime green
     emerald teal cyan sky blue indigo violet purple

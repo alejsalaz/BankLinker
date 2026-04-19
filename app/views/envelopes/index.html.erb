@@ -1,33 +1,33 @@
-<% content_for :title, "Pockets - BankLinker" %>
-<% content_for :breadcrumb, "Pockets" %>
+<% content_for :title, "Sobres - BankLinker" %>
+<% content_for :breadcrumb, "Sobres" %>
 
 <section class="space-y-8 max-w-5xl">
   <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
     <div>
-      <h1 class="text-3xl font-bold text-slate-100">Pockets</h1>
-      <p class="text-slate-400 mt-1">Las categorías en las que agrupas tus gastos. Se usan como botones en la vista de categorización.</p>
+      <h1 class="text-3xl font-bold text-slate-100">Sobres</h1>
+      <p class="text-slate-400 mt-1">Tus sobres de envelope budgeting. Se usan como botones en la vista de categorización.</p>
     </div>
   </div>
 
   <div class="bg-slate-900 rounded-2xl border border-slate-800 p-6">
     <div class="flex items-start justify-between mb-5">
       <div>
-        <h2 class="text-lg font-semibold text-slate-100">Crear nuevo pocket</h2>
+        <h2 class="text-lg font-semibold text-slate-100">Crear nuevo sobre</h2>
         <p class="text-sm text-slate-400 mt-1">Elige un nombre corto y un color que lo haga distinguible.</p>
       </div>
       <span class="w-10 h-10 rounded-lg bg-violet-500/10 border border-violet-500/30 text-violet-300 flex items-center justify-center">
         <%= heroicon :plus, klass: "w-5 h-5" %>
       </span>
     </div>
-    <%= render "form", pocket: @pocket %>
+    <%= render "form", envelope: @envelope %>
   </div>
 
   <div class="bg-slate-900 rounded-2xl border border-slate-800 overflow-hidden">
     <div class="px-6 py-4 border-b border-slate-800 flex items-center justify-between">
-      <h2 class="text-sm font-semibold uppercase tracking-wide text-slate-400">Tus pockets</h2>
-      <span class="text-xs text-slate-500"><%= pluralize(@pockets.size, "pocket") %></span>
+      <h2 class="text-sm font-semibold uppercase tracking-wide text-slate-400">Tus sobres</h2>
+      <span class="text-xs text-slate-500"><%= pluralize(@envelopes.size, "sobre") %></span>
     </div>
-    <% if @pockets.any? %>
+    <% if @envelopes.any? %>
       <table class="w-full text-sm">
         <thead class="bg-slate-950/40 text-slate-500 uppercase text-xs">
           <tr>
@@ -39,31 +39,31 @@
           </tr>
         </thead>
         <tbody class="divide-y divide-slate-800">
-          <% @pockets.each do |pocket| %>
+          <% @envelopes.each do |envelope| %>
             <tr class="hover:bg-slate-800/40 transition">
-              <td class="px-6 py-4 text-slate-500"><%= pocket.position %></td>
+              <td class="px-6 py-4 text-slate-500"><%= envelope.position %></td>
               <td class="px-6 py-4">
                 <div class="flex items-center gap-3">
-                  <span class="w-2.5 h-2.5 rounded-full <%= pocket.dot_classes %>"></span>
-                  <span class="font-medium text-slate-100"><%= pocket.name %></span>
+                  <span class="w-2.5 h-2.5 rounded-full <%= envelope.dot_classes %>"></span>
+                  <span class="font-medium text-slate-100"><%= envelope.name %></span>
                 </div>
               </td>
               <td class="px-6 py-4">
-                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border <%= pocket.badge_classes %>">
-                  <%= pocket.color %>
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border <%= envelope.badge_classes %>">
+                  <%= envelope.color %>
                 </span>
               </td>
-              <td class="px-6 py-4 text-slate-400"><%= pocket.transactions.count %></td>
+              <td class="px-6 py-4 text-slate-400"><%= envelope.transactions.count %></td>
               <td class="px-6 py-4 text-right">
                 <div class="inline-flex items-center gap-2">
-                  <%= link_to edit_pocket_path(pocket),
+                  <%= link_to edit_envelope_path(envelope),
                         class: "inline-flex items-center gap-1 text-xs text-slate-300 hover:text-slate-100 bg-slate-800 hover:bg-slate-700 px-2.5 py-1.5 rounded-lg transition" do %>
                     <%= heroicon :pencil, klass: "w-3.5 h-3.5" %>
                     Editar
                   <% end %>
-                  <%= button_to pocket_path(pocket),
+                  <%= button_to envelope_path(envelope),
                         method: :delete,
-                        form: { data: { turbo_confirm: "¿Eliminar '#{pocket.name}'?" } },
+                        form: { data: { turbo_confirm: "¿Eliminar '#{envelope.name}'?" } },
                         class: "inline-flex items-center gap-1 text-xs text-rose-300 hover:text-rose-200 bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/30 px-2.5 py-1.5 rounded-lg cursor-pointer transition" do %>
                     <%= heroicon :trash, klass: "w-3.5 h-3.5" %>
                     Eliminar
@@ -75,7 +75,7 @@
         </tbody>
       </table>
     <% else %>
-      <div class="px-6 py-10 text-center text-slate-400">Aún no tienes pockets. Crea uno arriba.</div>
+      <div class="px-6 py-10 text-center text-slate-400">Aún no tienes sobres. Crea uno arriba.</div>
     <% end %>
   </div>
 </section>

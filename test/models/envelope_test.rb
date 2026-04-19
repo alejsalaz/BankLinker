@@ -1,6 +1,6 @@
 require "test_helper"
 
-class PocketTest < ActiveSupport::TestCase
+class EnvelopeTest < ActiveSupport::TestCase
   # test "the truth" do
   #   assert true
   # end

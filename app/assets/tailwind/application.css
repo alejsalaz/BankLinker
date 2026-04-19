@@ -6,7 +6,7 @@
 @source "../../controllers";
 
 /*
- * Safelist para colores dinámicos de pockets (persistidos en DB, no visibles
+ * Safelist para colores dinámicos de sobres (persistidos en DB, no visibles
  * al scanner estático de Tailwind). Incluye variantes dark-friendly para la UI
  * fintech: fondos translúcidos, bordes sutiles y textos saturados.
  */
