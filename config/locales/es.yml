@@ -63,7 +63,7 @@ es:
 
   nav:
     home: Inicio
-    categorize: Categorizar
+    categorize: Movimientos
     envelopes: Sobres
     categories: Categorías
     export_csv: Exportar CSV
@@ -108,8 +108,8 @@ es:
 
   transactions:
     categorize:
-      title: Categorizar
-      subtitle: Asigna cada movimiento a un sobre. Usa el panel de detalles para afinar título, descripción o categoría Ivy.
+      title: Movimientos
+      subtitle: Asigna cada movimiento a un sobre. Usa el panel de detalles para afinar título, descripción o categoría.
       remaining_one: "Queda %{count} movimiento"
       remaining_other: "Quedan %{count} movimientos"
       assign_to_envelope: Asignar a sobre
