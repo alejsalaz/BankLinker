@@ -1,2 +1,147 @@
-#!/usr/bin/env ruby
-exec "./bin/rails", "server", *ARGV
+#!/usr/bin/env bash
+# Arranca el server listo para desarrollo local y acceso desde Tailscale.
+#
+# Qué hace:
+#   1. Busca el primer puerto libre en 3001..3005 (el 3000 siempre está tomado).
+#   2. Si tailscale está activo, obtiene el hostname y genera un cert en
+#      tmp/tailscale/ (si no existe todavía). El cert lo firma el control plane
+#      de Tailscale y es válido en toda tu tailnet.
+#   3. Exporta SSL_CERT/SSL_KEY para que config/puma.rb haga bind SSL.
+#   4. Arranca tailwind:watch y puma en paralelo con manejo de señales.
+#
+# Flags opcionales:
+#   --no-tls   fuerza http aunque Tailscale esté disponible.
+
+set -euo pipefail
+
+cd "$(dirname "$0")/.."
+
+CERT_DIR="tmp/tailscale"
+mkdir -p "$CERT_DIR" log
+
+USE_TLS=1
+for arg in "$@"; do
+  case "$arg" in
+    --no-tls) USE_TLS=0 ;;
+  esac
+done
+
+# ---------- puerto libre ----------
+port_in_use() {
+  # bash built-in: si no puede abrir el TCP, el puerto está libre
+  (echo > /dev/tcp/127.0.0.1/"$1") >/dev/null 2>&1
+}
+
+PORT=""
+for candidate in 3001 3002 3003 3004 3005; do
+  if ! port_in_use "$candidate"; then
+    PORT="$candidate"
+    break
+  fi
+done
+
+if [ -z "$PORT" ]; then
+  echo "✗ No hay puerto libre entre 3001 y 3005. Liberá alguno y volvé a correr bin/dev." >&2
+  exit 1
+fi
+
+# ---------- hostname Tailscale + cert ----------
+TS_HOSTNAME=""
+SSL_CERT_PATH=""
+SSL_KEY_PATH=""
+
+if [ "$USE_TLS" = "1" ] && command -v tailscale >/dev/null 2>&1; then
+  TS_HOSTNAME="$(tailscale status --self --json 2>/dev/null \
+    | ruby -rjson -e 'j=JSON.parse($stdin.read) rescue {}; print (j.dig("Self","DNSName")||"").chomp(".")' \
+    || true)"
+fi
+
+if [ -n "$TS_HOSTNAME" ]; then
+  SSL_CERT_PATH="${PWD}/${CERT_DIR}/${TS_HOSTNAME}.crt"
+  SSL_KEY_PATH="${PWD}/${CERT_DIR}/${TS_HOSTNAME}.key"
+
+  # Regenerá si falta o si está a menos de 14 días de caducar.
+  needs_renew=0
+  if [ ! -f "$SSL_CERT_PATH" ] || [ ! -f "$SSL_KEY_PATH" ]; then
+    needs_renew=1
+  elif ! openssl x509 -in "$SSL_CERT_PATH" -noout -checkend $((14*24*3600)) >/dev/null 2>&1; then
+    needs_renew=1
+  fi
+
+  if [ "$needs_renew" = "1" ]; then
+    echo "→ Pidiéndole a Tailscale un cert para ${TS_HOSTNAME}…"
+    if tailscale cert --cert-file "$SSL_CERT_PATH" --key-file "$SSL_KEY_PATH" "$TS_HOSTNAME" 2>&1; then
+      echo "✓ Cert guardado en ${CERT_DIR}/"
+    else
+      echo "⚠️  tailscale cert falló. Arrancando en HTTP." >&2
+      TS_HOSTNAME=""
+      SSL_CERT_PATH=""
+      SSL_KEY_PATH=""
+    fi
+  fi
+
+  # Puma necesita leer cert y key. Si quedaron de root (típico cuando
+  # `tailscale cert` corrió con sudo), avisamos con la solución concreta.
+  if [ -n "$SSL_CERT_PATH" ] && { [ ! -r "$SSL_CERT_PATH" ] || [ ! -r "$SSL_KEY_PATH" ]; }; then
+    echo "⚠️  El cert/key no son legibles por $USER:" >&2
+    ls -la "$SSL_CERT_PATH" "$SSL_KEY_PATH" >&2 || true
+    cat >&2 <<EOF
+
+Arreglo rápido:
+  sudo chown "\$USER:" tmp/tailscale/*
+  chmod 600 tmp/tailscale/*
+
+Arreglo permanente (Tailscale los escribe ya con tu uid):
+  sudo tailscale set --operator="\$USER"
+
+Mientras tanto sigo en HTTP plano.
+EOF
+    TS_HOSTNAME=""
+    SSL_CERT_PATH=""
+    SSL_KEY_PATH=""
+  fi
+fi
+
+# ---------- banner ----------
+echo ""
+echo "─────────────────────────────────────────────"
+echo "  BankLinker dev"
+if [ -n "$TS_HOSTNAME" ]; then
+  echo "  Local    : https://localhost:${PORT}"
+  echo "  Tailscale: https://${TS_HOSTNAME}:${PORT}"
+else
+  echo "  Local    : http://localhost:${PORT}"
+fi
+echo "─────────────────────────────────────────────"
+echo ""
+
+# ---------- procesos en paralelo ----------
+# Importante: usamos `puma -C config/puma.rb` (no `rails server`) porque rails
+# server fuerza su propio binding a 127.0.0.1 e ignora el `bind "ssl://..."`
+# de la config. Puma cargado directo sí lo respeta; la app Rails se levanta
+# igual porque Puma detecta config.ru.
+export PORT
+if [ -n "$SSL_CERT_PATH" ]; then
+  export SSL_CERT="$SSL_CERT_PATH"
+  export SSL_KEY="$SSL_KEY_PATH"
+fi
+
+TW_PID=""
+PUMA_PID=""
+
+cleanup() {
+  trap - INT TERM EXIT
+  [ -n "$TW_PID" ]   && kill "$TW_PID"   2>/dev/null || true
+  [ -n "$PUMA_PID" ] && kill "$PUMA_PID" 2>/dev/null || true
+  wait 2>/dev/null || true
+}
+trap cleanup INT TERM EXIT
+
+./bin/rails tailwindcss:watch > log/tailwind.log 2>&1 &
+TW_PID=$!
+
+bundle exec puma -C config/puma.rb &
+PUMA_PID=$!
+
+# Esperamos solo a puma: si muere el watcher, seguimos; si muere puma, salimos.
+wait "$PUMA_PID"

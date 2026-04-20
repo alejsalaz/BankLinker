@@ -28,8 +28,16 @@
 threads_count = ENV.fetch("RAILS_MAX_THREADS", 3)
 threads threads_count, threads_count
 
-# Specifies the `port` that Puma will listen on to receive requests; default is 3000.
-port ENV.fetch("PORT", 3000)
+# Specifies the `port` that Puma will listen on to receive requests; default is 3001
+# (el 3000 suele estar ocupado por otro proyecto local de Alejo).
+bind_port = ENV.fetch("PORT", 3001)
+
+# Bind SSL cuando bin/dev pasa cert+key de Tailscale; si no, bind plano.
+if ENV["SSL_CERT"] && ENV["SSL_KEY"] && File.exist?(ENV["SSL_CERT"]) && File.exist?(ENV["SSL_KEY"])
+  bind "ssl://0.0.0.0:#{bind_port}?cert=#{ENV['SSL_CERT']}&key=#{ENV['SSL_KEY']}"
+else
+  port bind_port
+end
 
 # Allow puma to be restarted by `bin/rails restart` command.
 plugin :tmp_restart
