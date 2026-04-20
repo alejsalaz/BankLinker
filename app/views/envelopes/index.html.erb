@@ -4,12 +4,12 @@
 <section class="space-y-8 max-w-5xl">
   <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
     <div>
-      <h1 class="text-3xl font-bold text-slate-100">Sobres</h1>
-      <p class="text-slate-400 mt-1">Tus sobres de envelope budgeting. Se usan como botones en la vista de categorización.</p>
+      <h1 class="text-2xl sm:text-3xl font-bold text-slate-100">Sobres</h1>
+      <p class="text-slate-400 mt-1 text-sm sm:text-base">Tus sobres de envelope budgeting. Se usan como botones en la vista de categorización.</p>
     </div>
   </div>
 
-  <div class="bg-slate-900 rounded-2xl border border-slate-800 p-6">
+  <div class="bg-slate-900 rounded-2xl border border-slate-800 p-4 sm:p-6">
     <div class="flex items-start justify-between mb-5">
       <div>
         <h2 class="text-lg font-semibold text-slate-100">Crear nuevo sobre</h2>
@@ -28,52 +28,88 @@
       <span class="text-xs text-slate-500"><%= pluralize(@envelopes.size, "sobre") %></span>
     </div>
     <% if @envelopes.any? %>
-      <table class="w-full text-sm">
-        <thead class="bg-slate-950/40 text-slate-500 uppercase text-xs">
-          <tr>
-            <th class="px-6 py-3 text-left font-medium">#</th>
-            <th class="px-6 py-3 text-left font-medium">Nombre</th>
-            <th class="px-6 py-3 text-left font-medium">Color</th>
-            <th class="px-6 py-3 text-left font-medium">Movimientos</th>
-            <th class="px-6 py-3 text-right font-medium">Acciones</th>
-          </tr>
-        </thead>
-        <tbody class="divide-y divide-slate-800">
-          <% @envelopes.each do |envelope| %>
-            <tr class="hover:bg-slate-800/40 transition">
-              <td class="px-6 py-4 text-slate-500"><%= envelope.position %></td>
-              <td class="px-6 py-4">
-                <div class="flex items-center gap-3">
-                  <span class="w-2.5 h-2.5 rounded-full <%= envelope.dot_classes %>"></span>
-                  <span class="font-medium text-slate-100"><%= envelope.name %></span>
-                </div>
-              </td>
-              <td class="px-6 py-4">
-                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border <%= envelope.badge_classes %>">
+      <div class="hidden md:block overflow-x-auto">
+        <table class="w-full text-sm">
+          <thead class="bg-slate-950/40 text-slate-500 uppercase text-xs">
+            <tr>
+              <th class="px-6 py-3 text-left font-medium">#</th>
+              <th class="px-6 py-3 text-left font-medium">Nombre</th>
+              <th class="px-6 py-3 text-left font-medium">Color</th>
+              <th class="px-6 py-3 text-left font-medium">Movimientos</th>
+              <th class="px-6 py-3 text-right font-medium">Acciones</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-800">
+            <% @envelopes.each do |envelope| %>
+              <tr class="hover:bg-slate-800/40 transition">
+                <td class="px-6 py-4 text-slate-500"><%= envelope.position %></td>
+                <td class="px-6 py-4">
+                  <div class="flex items-center gap-3">
+                    <span class="w-2.5 h-2.5 rounded-full <%= envelope.dot_classes %>"></span>
+                    <span class="font-medium text-slate-100"><%= envelope.name %></span>
+                  </div>
+                </td>
+                <td class="px-6 py-4">
+                  <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border <%= envelope.badge_classes %>">
+                    <%= envelope.color %>
+                  </span>
+                </td>
+                <td class="px-6 py-4 text-slate-400"><%= envelope.transactions.count %></td>
+                <td class="px-6 py-4 text-right">
+                  <div class="inline-flex items-center gap-2">
+                    <%= link_to edit_envelope_path(envelope),
+                          class: "inline-flex items-center gap-1 text-xs text-slate-300 hover:text-slate-100 bg-slate-800 hover:bg-slate-700 px-2.5 py-1.5 rounded-lg transition" do %>
+                      <%= heroicon :pencil, klass: "w-3.5 h-3.5" %>
+                      Editar
+                    <% end %>
+                    <%= button_to envelope_path(envelope),
+                          method: :delete,
+                          form: { data: { turbo_confirm: "¿Eliminar '#{envelope.name}'?" } },
+                          class: "inline-flex items-center gap-1 text-xs text-rose-300 hover:text-rose-200 bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/30 px-2.5 py-1.5 rounded-lg cursor-pointer transition" do %>
+                      <%= heroicon :trash, klass: "w-3.5 h-3.5" %>
+                      Eliminar
+                    <% end %>
+                  </div>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+
+      <ul class="md:hidden divide-y divide-slate-800">
+        <% @envelopes.each do |envelope| %>
+          <li class="p-4 flex items-start gap-3">
+            <span class="w-2.5 h-2.5 rounded-full <%= envelope.dot_classes %> mt-2 shrink-0"></span>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center justify-between gap-2">
+                <span class="font-medium text-slate-100 truncate"><%= envelope.name %></span>
+                <span class="text-xs text-slate-500 shrink-0">#<%= envelope.position %></span>
+              </div>
+              <div class="flex items-center gap-2 mt-1 flex-wrap">
+                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium border <%= envelope.badge_classes %>">
                   <%= envelope.color %>
                 </span>
-              </td>
-              <td class="px-6 py-4 text-slate-400"><%= envelope.transactions.count %></td>
-              <td class="px-6 py-4 text-right">
-                <div class="inline-flex items-center gap-2">
-                  <%= link_to edit_envelope_path(envelope),
-                        class: "inline-flex items-center gap-1 text-xs text-slate-300 hover:text-slate-100 bg-slate-800 hover:bg-slate-700 px-2.5 py-1.5 rounded-lg transition" do %>
-                    <%= heroicon :pencil, klass: "w-3.5 h-3.5" %>
-                    Editar
-                  <% end %>
-                  <%= button_to envelope_path(envelope),
-                        method: :delete,
-                        form: { data: { turbo_confirm: "¿Eliminar '#{envelope.name}'?" } },
-                        class: "inline-flex items-center gap-1 text-xs text-rose-300 hover:text-rose-200 bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/30 px-2.5 py-1.5 rounded-lg cursor-pointer transition" do %>
-                    <%= heroicon :trash, klass: "w-3.5 h-3.5" %>
-                    Eliminar
-                  <% end %>
-                </div>
-              </td>
-            </tr>
-          <% end %>
-        </tbody>
-      </table>
+                <span class="text-xs text-slate-500"><%= pluralize(envelope.transactions.count, "movimiento") %></span>
+              </div>
+              <div class="flex items-center gap-2 mt-3">
+                <%= link_to edit_envelope_path(envelope),
+                      class: "inline-flex items-center gap-1 text-xs text-slate-300 hover:text-slate-100 bg-slate-800 hover:bg-slate-700 px-3 py-1.5 rounded-lg transition flex-1 justify-center" do %>
+                  <%= heroicon :pencil, klass: "w-3.5 h-3.5" %>
+                  Editar
+                <% end %>
+                <%= button_to envelope_path(envelope),
+                      method: :delete,
+                      form: { data: { turbo_confirm: "¿Eliminar '#{envelope.name}'?" }, class: "flex-1" },
+                      class: "inline-flex w-full items-center justify-center gap-1 text-xs text-rose-300 hover:text-rose-200 bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/30 px-3 py-1.5 rounded-lg cursor-pointer transition" do %>
+                  <%= heroicon :trash, klass: "w-3.5 h-3.5" %>
+                  Eliminar
+                <% end %>
+              </div>
+            </div>
+          </li>
+        <% end %>
+      </ul>
     <% else %>
       <div class="px-6 py-10 text-center text-slate-400">Aún no tienes sobres. Crea uno arriba.</div>
     <% end %>

@@ -1,15 +1,31 @@
-<aside class="hidden lg:flex fixed inset-y-0 left-0 w-64 flex-col bg-slate-900 border-r border-slate-800">
-  <div class="h-16 flex items-center gap-3 px-6 border-b border-slate-800">
-    <span class="w-9 h-9 rounded-lg bg-gradient-to-br from-violet-500 to-indigo-600 flex items-center justify-center text-white">
-      <%= heroicon :sparkles, klass: "w-5 h-5" %>
-    </span>
-    <div class="leading-tight">
-      <p class="font-semibold text-slate-100"><%= t("banklinker.app_name") %></p>
-      <p class="text-xs text-slate-500"><%= t("banklinker.tagline") %></p>
+<div id="sidebar-backdrop"
+     class="fixed inset-0 bg-slate-950/70 backdrop-blur-sm z-30 lg:hidden opacity-0 pointer-events-none transition-opacity duration-200"
+     data-sidebar-backdrop></div>
+
+<aside id="mobile-sidebar"
+       data-sidebar
+       class="fixed inset-y-0 left-0 w-72 max-w-[85vw] z-40 flex flex-col bg-slate-900 border-r border-slate-800
+              -translate-x-full transition-transform duration-200 ease-out
+              lg:translate-x-0 lg:w-64">
+  <div class="h-16 flex items-center justify-between gap-3 px-5 border-b border-slate-800">
+    <div class="flex items-center gap-3">
+      <span class="w-9 h-9 rounded-lg bg-gradient-to-br from-violet-500 to-indigo-600 flex items-center justify-center text-white">
+        <%= heroicon :sparkles, klass: "w-5 h-5" %>
+      </span>
+      <div class="leading-tight">
+        <p class="font-semibold text-slate-100"><%= t("banklinker.app_name") %></p>
+        <p class="text-xs text-slate-500"><%= t("banklinker.tagline") %></p>
+      </div>
     </div>
+    <button type="button"
+            data-sidebar-close
+            class="lg:hidden text-slate-400 hover:text-slate-100 p-2 -mr-2 rounded-lg hover:bg-slate-800 cursor-pointer"
+            aria-label="<%= t('nav.close_menu') %>">
+      <%= heroicon :x_mark, klass: "w-5 h-5" %>
+    </button>
   </div>
 
-  <nav class="flex-1 px-3 py-6 space-y-1">
+  <nav class="flex-1 px-3 py-6 space-y-1 overflow-y-auto">
     <% nav_items = [
       { label: t("nav.home"), path: root_path, icon: :home, active: current_page?(root_path) },
       { label: t("nav.categorize"), path: transactions_path, icon: :rectangle_stack, active: current_page?(transactions_path) },
@@ -37,3 +53,64 @@
     </div>
   </div>
 </aside>
+
+<script>
+  (function () {
+    if (window.__banklinkerSidebarBound) {
+      window.__banklinkerSidebarClose && window.__banklinkerSidebarClose();
+      return;
+    }
+    window.__banklinkerSidebarBound = true;
+
+    const isMobile = () => !window.matchMedia("(min-width: 1024px)").matches;
+
+    function getEls() {
+      return {
+        sidebar: document.getElementById("mobile-sidebar"),
+        backdrop: document.getElementById("sidebar-backdrop")
+      };
+    }
+
+    function open() {
+      const { sidebar, backdrop } = getEls();
+      if (!sidebar || !backdrop) return;
+      sidebar.classList.remove("-translate-x-full");
+      sidebar.classList.add("translate-x-0");
+      backdrop.classList.remove("opacity-0", "pointer-events-none");
+      backdrop.classList.add("opacity-100");
+      if (isMobile()) document.body.classList.add("overflow-hidden");
+    }
+
+    function close() {
+      const { sidebar, backdrop } = getEls();
+      if (!sidebar || !backdrop) return;
+      if (isMobile()) {
+        sidebar.classList.add("-translate-x-full");
+        sidebar.classList.remove("translate-x-0");
+      }
+      backdrop.classList.add("opacity-0", "pointer-events-none");
+      backdrop.classList.remove("opacity-100");
+      document.body.classList.remove("overflow-hidden");
+    }
+
+    window.__banklinkerSidebarClose = close;
+
+    document.addEventListener("click", (event) => {
+      if (event.target.closest("[data-sidebar-toggle]")) {
+        event.preventDefault();
+        open();
+      } else if (event.target.closest("[data-sidebar-close]") || event.target.closest("[data-sidebar-backdrop]")) {
+        close();
+      } else if (isMobile() && event.target.closest("#mobile-sidebar a")) {
+        close();
+      }
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") close();
+    });
+
+    document.addEventListener("turbo:before-visit", close);
+    document.addEventListener("turbo:before-render", close);
+  })();
+</script>

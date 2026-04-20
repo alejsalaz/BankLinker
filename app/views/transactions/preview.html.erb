@@ -3,9 +3,9 @@
 
 <section class="space-y-6 max-w-6xl">
   <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
-    <div>
-      <h1 class="text-3xl font-bold text-slate-100"><%= t("transactions.preview.title") %></h1>
-      <p class="text-slate-400 mt-1">
+    <div class="min-w-0">
+      <h1 class="text-2xl sm:text-3xl font-bold text-slate-100"><%= t("transactions.preview.title") %></h1>
+      <p class="text-slate-400 mt-1 text-sm sm:text-base">
         <%= t("transactions.preview.subtitle_html",
               count: @staging_transactions.size,
               from: @date_from.strftime("%d/%m/%Y"),
@@ -41,65 +41,90 @@
       </label>
     </div>
     <button type="button" id="apply-range"
-            class="inline-flex items-center gap-2 bg-violet-600 hover:bg-violet-500 text-white text-sm px-4 py-2 rounded-lg cursor-pointer transition">
+            class="inline-flex items-center justify-center gap-2 bg-violet-600 hover:bg-violet-500 text-white text-sm px-4 py-2 rounded-lg cursor-pointer transition w-full md:w-auto">
       <%= heroicon :check_circle, klass: "w-4 h-4" %>
       <%= t("transactions.preview.range.apply") %>
     </button>
   </div>
 
+  <% type_classes = { "expense" => "bg-rose-500/10 border-rose-500/30 text-rose-300",
+                      "income"  => "bg-emerald-500/10 border-emerald-500/30 text-emerald-300",
+                      "transfer" => "bg-sky-500/10 border-sky-500/30 text-sky-300" } %>
+
   <%= form_with url: confirm_preview_transactions_path, method: :post, local: true, id: "preview-form" do %>
     <div class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden">
-      <div class="px-6 py-4 border-b border-slate-800 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
-        <div class="flex items-center gap-2 text-sm text-slate-400">
+      <div class="px-4 sm:px-6 py-4 border-b border-slate-800 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        <div class="flex items-center gap-2 text-sm text-slate-400 flex-wrap">
           <label class="flex items-center gap-2 cursor-pointer">
             <input type="checkbox" id="toggle-all" checked
                    class="w-4 h-4 rounded border-slate-700 bg-slate-950 text-violet-500 focus:ring-violet-500/50" />
             <span><%= t("transactions.preview.toggle_all") %></span>
           </label>
-          <span id="selected-counter" class="text-xs text-slate-500 ml-3"></span>
+          <span id="selected-counter" class="text-xs text-slate-500"></span>
         </div>
         <button type="submit"
-                class="inline-flex items-center gap-2 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-semibold px-4 py-2 rounded-lg cursor-pointer transition">
+                class="inline-flex items-center justify-center gap-2 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-semibold px-4 py-2 rounded-lg cursor-pointer transition w-full sm:w-auto">
           <%= heroicon :check_circle, klass: "w-4 h-4" %>
           <%= t("transactions.preview.confirm_import") %>
         </button>
       </div>
 
-      <table class="w-full text-sm">
-        <thead class="bg-slate-950/40 text-slate-500 uppercase text-xs">
-          <tr>
-            <th class="px-4 py-3 text-left font-medium w-10"></th>
-            <th class="px-4 py-3 text-left font-medium"><%= t("transactions.preview.headers.date") %></th>
-            <th class="px-4 py-3 text-left font-medium"><%= t("transactions.preview.headers.description") %></th>
-            <th class="px-4 py-3 text-left font-medium"><%= t("transactions.preview.headers.type") %></th>
-            <th class="px-4 py-3 text-right font-medium"><%= t("transactions.preview.headers.amount") %></th>
-          </tr>
-        </thead>
-        <tbody class="divide-y divide-slate-800">
-          <% @staging_transactions.each do |tx| %>
-            <tr class="hover:bg-slate-800/40 transition">
-              <td class="px-4 py-3">
-                <input type="checkbox" name="keep_ids[]" value="<%= tx.id %>" checked
-                       data-date="<%= tx.date.iso8601 %>"
-                       class="preview-keep w-4 h-4 rounded border-slate-700 bg-slate-950 text-violet-500 focus:ring-violet-500/50" />
-              </td>
-              <td class="px-4 py-3 text-slate-300 whitespace-nowrap"><%= tx.date.strftime("%d/%m/%Y") %></td>
-              <td class="px-4 py-3 text-slate-200"><%= tx.description %></td>
-              <td class="px-4 py-3">
-                <% type_classes = { "expense" => "bg-rose-500/10 border-rose-500/30 text-rose-300",
-                                    "income"  => "bg-emerald-500/10 border-emerald-500/30 text-emerald-300",
-                                    "transfer" => "bg-sky-500/10 border-sky-500/30 text-sky-300" } %>
-                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium border <%= type_classes[tx.transaction_type] %>">
-                  <%= t("transactions.categorize.type.#{tx.transaction_type}") %>
-                </span>
-              </td>
-              <td class="px-4 py-3 text-right font-mono text-slate-200 whitespace-nowrap">
-                <%= number_to_currency(tx.amount, unit: "$", separator: ",", delimiter: ".", precision: 0) %>
-              </td>
+      <div class="hidden md:block overflow-x-auto">
+        <table class="w-full text-sm">
+          <thead class="bg-slate-950/40 text-slate-500 uppercase text-xs">
+            <tr>
+              <th class="px-4 py-3 text-left font-medium w-10"></th>
+              <th class="px-4 py-3 text-left font-medium"><%= t("transactions.preview.headers.date") %></th>
+              <th class="px-4 py-3 text-left font-medium"><%= t("transactions.preview.headers.description") %></th>
+              <th class="px-4 py-3 text-left font-medium"><%= t("transactions.preview.headers.type") %></th>
+              <th class="px-4 py-3 text-right font-medium"><%= t("transactions.preview.headers.amount") %></th>
             </tr>
-          <% end %>
-        </tbody>
-      </table>
+          </thead>
+          <tbody class="divide-y divide-slate-800">
+            <% @staging_transactions.each do |tx| %>
+              <tr class="hover:bg-slate-800/40 transition">
+                <td class="px-4 py-3">
+                  <input type="checkbox" name="keep_ids[]" value="<%= tx.id %>" checked
+                         data-date="<%= tx.date.iso8601 %>"
+                         class="preview-keep w-4 h-4 rounded border-slate-700 bg-slate-950 text-violet-500 focus:ring-violet-500/50" />
+                </td>
+                <td class="px-4 py-3 text-slate-300 whitespace-nowrap"><%= tx.date.strftime("%d/%m/%Y") %></td>
+                <td class="px-4 py-3 text-slate-200"><%= tx.description %></td>
+                <td class="px-4 py-3">
+                  <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium border <%= type_classes[tx.transaction_type] %>">
+                    <%= t("transactions.categorize.type.#{tx.transaction_type}") %>
+                  </span>
+                </td>
+                <td class="px-4 py-3 text-right font-mono text-slate-200 whitespace-nowrap">
+                  <%= number_to_currency(tx.amount, unit: "$", separator: ",", delimiter: ".", precision: 0) %>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+
+      <ul class="md:hidden divide-y divide-slate-800">
+        <% @staging_transactions.each do |tx| %>
+          <li class="p-4 flex gap-3">
+            <input type="checkbox" name="keep_ids[]" value="<%= tx.id %>" checked
+                   data-date="<%= tx.date.iso8601 %>"
+                   class="preview-keep mt-1 w-4 h-4 rounded border-slate-700 bg-slate-950 text-violet-500 focus:ring-violet-500/50 shrink-0" />
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center justify-between gap-2">
+                <span class="text-xs text-slate-500"><%= tx.date.strftime("%d/%m/%Y") %></span>
+                <span class="font-mono text-sm text-slate-100 whitespace-nowrap">
+                  <%= number_to_currency(tx.amount, unit: "$", separator: ",", delimiter: ".", precision: 0) %>
+                </span>
+              </div>
+              <p class="text-sm text-slate-200 mt-1 break-words"><%= tx.description %></p>
+              <span class="mt-2 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium border <%= type_classes[tx.transaction_type] %>">
+                <%= t("transactions.categorize.type.#{tx.transaction_type}") %>
+              </span>
+            </div>
+          </li>
+        <% end %>
+      </ul>
     </div>
   <% end %>
 </section>

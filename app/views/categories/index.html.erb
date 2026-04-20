@@ -4,12 +4,12 @@
 <section class="space-y-8 max-w-5xl">
   <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
     <div>
-      <h1 class="text-3xl font-bold text-slate-100"><%= t("categories.title") %></h1>
-      <p class="text-slate-400 mt-1"><%= t("categories.subtitle") %></p>
+      <h1 class="text-2xl sm:text-3xl font-bold text-slate-100"><%= t("categories.title") %></h1>
+      <p class="text-slate-400 mt-1 text-sm sm:text-base"><%= t("categories.subtitle") %></p>
     </div>
   </div>
 
-  <div class="bg-slate-900 rounded-2xl border border-slate-800 p-6">
+  <div class="bg-slate-900 rounded-2xl border border-slate-800 p-4 sm:p-6">
     <div class="flex items-start justify-between mb-5">
       <div>
         <h2 class="text-lg font-semibold text-slate-100"><%= t("categories.create") %></h2>
@@ -28,41 +28,69 @@
       <span class="text-xs text-slate-500"><%= pluralize(@categories.size, "categoría") %></span>
     </div>
     <% if @categories.any? %>
-      <table class="w-full text-sm">
-        <thead class="bg-slate-950/40 text-slate-500 uppercase text-xs">
-          <tr>
-            <th class="px-6 py-3 text-left font-medium">#</th>
-            <th class="px-6 py-3 text-left font-medium"><%= t("envelopes.name") %></th>
-            <th class="px-6 py-3 text-left font-medium"><%= t("envelopes.movements") %></th>
-            <th class="px-6 py-3 text-right font-medium"><%= t("envelopes.actions.title") %></th>
-          </tr>
-        </thead>
-        <tbody class="divide-y divide-slate-800">
-          <% @categories.each do |category| %>
-            <tr class="hover:bg-slate-800/40 transition">
-              <td class="px-6 py-4 text-slate-500"><%= category.position %></td>
-              <td class="px-6 py-4 font-medium text-slate-100"><%= category.name %></td>
-              <td class="px-6 py-4 text-slate-400"><%= category.transactions.count %></td>
-              <td class="px-6 py-4 text-right">
-                <div class="inline-flex items-center gap-2">
-                  <%= link_to edit_category_path(category),
-                        class: "inline-flex items-center gap-1 text-xs text-slate-300 hover:text-slate-100 bg-slate-800 hover:bg-slate-700 px-2.5 py-1.5 rounded-lg transition" do %>
-                    <%= heroicon :pencil, klass: "w-3.5 h-3.5" %>
-                    <%= t("envelopes.actions.edit") %>
-                  <% end %>
-                  <%= button_to category_path(category),
-                        method: :delete,
-                        form: { data: { turbo_confirm: "¿Eliminar '#{category.name}'?" } },
-                        class: "inline-flex items-center gap-1 text-xs text-rose-300 hover:text-rose-200 bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/30 px-2.5 py-1.5 rounded-lg cursor-pointer transition" do %>
-                    <%= heroicon :trash, klass: "w-3.5 h-3.5" %>
-                    <%= t("envelopes.actions.delete") %>
-                  <% end %>
-                </div>
-              </td>
+      <div class="hidden md:block overflow-x-auto">
+        <table class="w-full text-sm">
+          <thead class="bg-slate-950/40 text-slate-500 uppercase text-xs">
+            <tr>
+              <th class="px-6 py-3 text-left font-medium">#</th>
+              <th class="px-6 py-3 text-left font-medium"><%= t("envelopes.name") %></th>
+              <th class="px-6 py-3 text-left font-medium"><%= t("envelopes.movements") %></th>
+              <th class="px-6 py-3 text-right font-medium"><%= t("envelopes.actions.title") %></th>
             </tr>
-          <% end %>
-        </tbody>
-      </table>
+          </thead>
+          <tbody class="divide-y divide-slate-800">
+            <% @categories.each do |category| %>
+              <tr class="hover:bg-slate-800/40 transition">
+                <td class="px-6 py-4 text-slate-500"><%= category.position %></td>
+                <td class="px-6 py-4 font-medium text-slate-100"><%= category.name %></td>
+                <td class="px-6 py-4 text-slate-400"><%= category.transactions.count %></td>
+                <td class="px-6 py-4 text-right">
+                  <div class="inline-flex items-center gap-2">
+                    <%= link_to edit_category_path(category),
+                          class: "inline-flex items-center gap-1 text-xs text-slate-300 hover:text-slate-100 bg-slate-800 hover:bg-slate-700 px-2.5 py-1.5 rounded-lg transition" do %>
+                      <%= heroicon :pencil, klass: "w-3.5 h-3.5" %>
+                      <%= t("envelopes.actions.edit") %>
+                    <% end %>
+                    <%= button_to category_path(category),
+                          method: :delete,
+                          form: { data: { turbo_confirm: "¿Eliminar '#{category.name}'?" } },
+                          class: "inline-flex items-center gap-1 text-xs text-rose-300 hover:text-rose-200 bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/30 px-2.5 py-1.5 rounded-lg cursor-pointer transition" do %>
+                      <%= heroicon :trash, klass: "w-3.5 h-3.5" %>
+                      <%= t("envelopes.actions.delete") %>
+                    <% end %>
+                  </div>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+
+      <ul class="md:hidden divide-y divide-slate-800">
+        <% @categories.each do |category| %>
+          <li class="p-4">
+            <div class="flex items-center justify-between gap-2">
+              <span class="font-medium text-slate-100 truncate"><%= category.name %></span>
+              <span class="text-xs text-slate-500 shrink-0">#<%= category.position %></span>
+            </div>
+            <p class="text-xs text-slate-500 mt-1"><%= pluralize(category.transactions.count, "movimiento") %></p>
+            <div class="flex items-center gap-2 mt-3">
+              <%= link_to edit_category_path(category),
+                    class: "inline-flex flex-1 items-center justify-center gap-1 text-xs text-slate-300 hover:text-slate-100 bg-slate-800 hover:bg-slate-700 px-3 py-1.5 rounded-lg transition" do %>
+                <%= heroicon :pencil, klass: "w-3.5 h-3.5" %>
+                <%= t("envelopes.actions.edit") %>
+              <% end %>
+              <%= button_to category_path(category),
+                    method: :delete,
+                    form: { data: { turbo_confirm: "¿Eliminar '#{category.name}'?" }, class: "flex-1" },
+                    class: "inline-flex w-full items-center justify-center gap-1 text-xs text-rose-300 hover:text-rose-200 bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/30 px-3 py-1.5 rounded-lg cursor-pointer transition" do %>
+                <%= heroicon :trash, klass: "w-3.5 h-3.5" %>
+                <%= t("envelopes.actions.delete") %>
+              <% end %>
+            </div>
+          </li>
+        <% end %>
+      </ul>
     <% else %>
       <div class="px-6 py-10 text-center text-slate-400"><%= t("categories.empty") %></div>
     <% end %>

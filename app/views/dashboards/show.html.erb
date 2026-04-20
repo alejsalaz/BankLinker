@@ -4,8 +4,8 @@
 <section class="space-y-8 max-w-6xl">
   <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
     <div>
-      <h1 class="text-3xl font-bold text-slate-100"><%= t("dashboard.title") %></h1>
-      <p class="text-slate-400 mt-1"><%= t("dashboard.subtitle") %></p>
+      <h1 class="text-2xl sm:text-3xl font-bold text-slate-100"><%= t("dashboard.title") %></h1>
+      <p class="text-slate-400 mt-1 text-sm sm:text-base"><%= t("dashboard.subtitle") %></p>
     </div>
   </div>
 
@@ -46,13 +46,13 @@
   </div>
 
   <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
-    <div class="lg:col-span-2 bg-slate-900 rounded-2xl border border-slate-800 p-6">
-      <div class="flex items-start justify-between mb-6 gap-4">
-        <div>
+    <div class="lg:col-span-2 bg-slate-900 rounded-2xl border border-slate-800 p-4 sm:p-6">
+      <div class="flex items-start justify-between mb-6 gap-3 flex-wrap">
+        <div class="min-w-0">
           <h2 class="text-lg font-semibold text-slate-100">Subir extracto</h2>
           <p class="text-sm text-slate-400 mt-1">Aceptamos PDF y imágenes. Los PDFs protegidos necesitan contraseña.</p>
         </div>
-        <div class="flex items-center gap-2">
+        <div class="flex items-center gap-2 shrink-0">
           <% if @pending_count.positive? || @processed_count.positive? %>
             <%= button_to reset_transactions_path,
                   method: :delete,
@@ -109,15 +109,15 @@
           </label>
         </div>
 
-        <div class="flex items-center justify-between pt-2">
+        <div class="flex flex-col-reverse sm:flex-row sm:items-center sm:justify-between gap-3 pt-2">
           <p class="text-xs text-slate-500">Tip: para OCR necesitas <code class="bg-slate-800 px-1.5 py-0.5 rounded text-slate-300">tesseract-ocr</code> instalado.</p>
           <%= f.submit "Procesar extracto",
-                class: "inline-flex items-center gap-2 bg-violet-600 hover:bg-violet-500 text-white font-semibold px-5 py-2.5 rounded-lg cursor-pointer transition" %>
+                class: "w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-violet-600 hover:bg-violet-500 text-white font-semibold px-5 py-2.5 rounded-lg cursor-pointer transition" %>
         </div>
       <% end %>
     </div>
 
-    <div class="bg-slate-900 rounded-2xl border border-slate-800 p-6">
+    <div class="bg-slate-900 rounded-2xl border border-slate-800 p-4 sm:p-6">
       <div class="flex items-center justify-between mb-4">
         <h2 class="text-lg font-semibold text-slate-100">Sobres</h2>
         <%= link_to envelopes_path, class: "text-xs text-violet-400 hover:text-violet-300 inline-flex items-center gap-1" do %>

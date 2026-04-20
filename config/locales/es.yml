@@ -68,6 +68,8 @@ es:
     categories: Categorías
     export_csv: Exportar CSV
     upload_statement: Subir extracto
+    open_menu: Abrir menú
+    close_menu: Cerrar menú
 
   dashboard:
     title: Panel de control

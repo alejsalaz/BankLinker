@@ -42,7 +42,7 @@
         <%= render "shared/topbar" %>
 
         <% if notice.present? %>
-          <div class="px-6 lg:px-10 mt-4">
+          <div class="px-4 sm:px-6 lg:px-10 mt-4">
             <div class="bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 rounded-xl px-4 py-3 text-sm flex items-center gap-2">
               <%= heroicon :check_circle, klass: "w-5 h-5" %>
               <%= notice %>
@@ -50,14 +50,14 @@
           </div>
         <% end %>
         <% if alert.present? %>
-          <div class="px-6 lg:px-10 mt-4">
+          <div class="px-4 sm:px-6 lg:px-10 mt-4">
             <div class="bg-rose-500/10 border border-rose-500/30 text-rose-300 rounded-xl px-4 py-3 text-sm">
               <%= alert %>
             </div>
           </div>
         <% end %>
 
-        <main class="px-6 lg:px-10 py-8">
+        <main class="px-4 sm:px-6 lg:px-10 py-6 sm:py-8">
           <%= yield %>
         </main>
       </div>
